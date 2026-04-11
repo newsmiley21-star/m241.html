@@ -3,30 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Echoppe241 | Authentification Autonome</title>
+    <title>Echoppe241 | Profils Vérifiés & Marketplace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
     <style>
-        :root {
-            --gab-green: #00853f;
-            --gab-yellow: #fcd116;
-            --gab-blue: #3a75c4;
-        }
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; overflow-x: hidden; }
-        
+        :root { --gab-green: #00853f; --gab-yellow: #fcd116; --gab-blue: #3a75c4; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
         .bg-gab-green { background-color: var(--gab-green); }
         .bg-gab-yellow { background-color: var(--gab-yellow); }
         .bg-gab-blue { background-color: var(--gab-blue); }
         .text-gab-blue { color: var(--gab-blue); }
-
-        .cart-badge { top: -5px; right: -5px; }
         .animate-fade-in { animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        #receipt-template { position: absolute; left: -9999px; top: 0; width: 400px; background: white; padding: 20px; border: 2px solid #3a75c4; border-radius: 20px; }
     </style>
 </head>
 <body class="antialiased">
 
-    <!-- Bannière Couleurs Gabon -->
     <div class="h-1 flex sticky top-0 z-[60]">
         <div class="flex-1 bg-gab-green"></div>
         <div class="flex-1 bg-gab-yellow"></div>
@@ -37,164 +33,372 @@
     <header class="bg-white/90 backdrop-blur-md shadow-sm sticky top-1 z-50 border-b border-slate-100">
         <div class="max-w-7xl mx-auto px-4 py-2 flex justify-between items-center">
             <div class="flex items-center gap-3 cursor-pointer" onclick="showSection('marketplace')">
-                <img src="https://i.ibb.co/2Q73j3X/echoppe241-logo.png" alt="Echoppe241 Logo" class="h-10 md:h-12 w-auto object-contain">
+                <img src="https://i.ibb.co/2Q73j3X/echoppe241-logo.png" alt="Echoppe241 Logo" class="h-10 w-auto object-contain">
                 <div class="flex flex-col leading-none">
                     <span class="font-black text-lg tracking-tighter text-slate-800">ECHOPPE<span class="text-gab-blue">241</span></span>
-                    <span class="text-[8px] font-bold text-gab-green uppercase tracking-widest text-nowrap">Le Marché National</span>
+                    <span class="text-[8px] font-bold text-gab-green uppercase tracking-widest">Producteurs du Gabon</span>
                 </div>
             </div>
 
-            <div class="hidden lg:flex items-center gap-8 text-xs font-bold uppercase tracking-wider text-slate-600">
-                <button onclick="showSection('marketplace')" class="hover:text-gab-blue transition">Boutique</button>
-                <button onclick="checkAuthAndShow('publish')" class="hover:text-gab-blue transition">Vendre</button>
-                <button onclick="checkAuthAndShow('orders')" class="hover:text-gab-blue transition">Commandes</button>
-            </div>
-
             <div class="flex items-center gap-3">
-                <button onclick="toggleCart()" class="relative p-2 text-slate-600 hover:text-gab-blue">
+                <button onclick="checkAuthAndShow('publish')" class="hidden md:block bg-gab-green text-white px-4 py-2 rounded-full text-xs font-bold hover:opacity-90">Vendre</button>
+                <button onclick="toggleCart()" class="relative p-2 text-slate-600">
                     <i class="fa-solid fa-cart-shopping text-xl"></i>
-                    <span id="cartCount" class="absolute cart-badge bg-red-500 text-white text-[9px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white">0</span>
+                    <span id="cartCount" class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white">0</span>
                 </button>
-                <button id="authBtn" onclick="toggleAuthModal()" class="bg-slate-100 text-slate-700 px-4 py-2 rounded-full text-xs font-bold hover:bg-gab-blue hover:text-white transition">
-                    <i class="fa-solid fa-user mr-2"></i>Connexion
+                <button id="authBtn" onclick="handleAuthClick()" class="bg-slate-100 text-slate-700 p-2 rounded-full text-xs font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-user"></i>
                 </button>
             </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto p-4 md:p-8">
+    <main class="max-w-7xl mx-auto p-4">
         <!-- SECTION: MARKETPLACE -->
         <section id="section-marketplace" class="space-y-8 animate-fade-in">
-            <div class="bg-gradient-to-br from-gab-blue to-blue-800 rounded-[2.5rem] p-8 md:p-12 text-white relative overflow-hidden shadow-2xl">
-                <div class="relative z-10 max-w-lg">
-                    <span class="bg-gab-yellow text-gab-blue px-3 py-1 rounded-full text-[10px] font-black uppercase mb-4 inline-block">Direct des Provinces</span>
-                    <h1 class="text-4xl md:text-5xl font-black mb-4 leading-tight">Créez votre boutique en 2 minutes.</h1>
-                    <p class="text-blue-100 mb-6 text-sm md:text-base">Inscrivez-vous dès maintenant pour vendre vos produits ou suivre vos commandes.</p>
-                    <button onclick="toggleAuthModal()" class="bg-white text-gab-blue px-6 py-3 rounded-2xl font-black text-sm uppercase shadow-lg hover:bg-gab-yellow transition">Commencer</button>
-                </div>
-                <i class="fa-solid fa-shop absolute -right-10 -bottom-10 text-[200px] text-white/10 rotate-12"></i>
-            </div>
-            <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+            <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 py-6"></div>
         </section>
 
-        <!-- SECTION: PUBLIER -->
-        <section id="section-publish" class="hidden max-w-2xl mx-auto py-10 animate-fade-in">
+        <!-- SECTION: PROFIL UTILISATEUR (MODIFICATION) -->
+        <section id="section-profile" class="hidden max-w-2xl mx-auto py-10 animate-fade-in">
             <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden">
-                <div class="bg-gab-green p-8 text-white">
-                    <h2 class="text-2xl font-black uppercase">Vendre un produit</h2>
+                <div class="bg-gab-blue p-6 text-white text-center">
+                    <h2 class="text-xl font-black uppercase italic">Paramètres du Compte</h2>
                 </div>
-                <form id="productForm" class="p-8 space-y-6">
-                    <input type="text" id="pName" placeholder="Nom du produit" class="w-full bg-slate-50 border-2 border-slate-100 p-4 rounded-2xl outline-none focus:border-gab-green" required>
-                    <input type="number" id="pPrice" placeholder="Prix (FCFA)" class="w-full bg-slate-50 border-2 border-slate-100 p-4 rounded-2xl outline-none focus:border-gab-green" required>
-                    <select id="pProvince" class="w-full bg-slate-50 border-2 border-slate-100 p-4 rounded-2xl outline-none">
-                        <option>Estuaire</option><option>Woleu-Ntem</option><option>Ogooué-Maritime</option><option>Haut-Ogooué</option>
-                    </select>
-                    <input type="text" id="pImg" placeholder="Lien image" class="w-full bg-slate-50 border-2 border-slate-100 p-4 rounded-2xl outline-none" required>
-                    <button type="submit" class="w-full bg-gab-green text-white py-5 rounded-2xl font-black uppercase tracking-widest">Publier</button>
+                <form id="profileForm" class="p-8 space-y-6">
+                    <div class="flex flex-col items-center gap-4">
+                        <div class="relative group">
+                            <img id="profilePreview" src="https://ui-avatars.com/api/?name=User&background=random" class="w-32 h-32 rounded-full object-cover border-4 border-gab-yellow shadow-lg">
+                            <label class="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md cursor-pointer">
+                                <i class="fa-solid fa-camera text-gab-blue"></i>
+                                <input type="file" id="profileImgInput" accept="image/*" class="hidden">
+                            </label>
+                        </div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Photo de profil</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <input type="text" id="profName" placeholder="Nom complet / Nom d'entreprise" class="w-full bg-slate-50 border-2 border-slate-100 p-4 rounded-2xl outline-none" required>
+                        <textarea id="profBio" placeholder="Bio: Parlez de votre savoir-faire..." class="w-full bg-slate-50 border-2 border-slate-100 p-4 rounded-2xl outline-none h-24"></textarea>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <select id="profProvince" class="bg-slate-50 border-2 border-slate-100 p-4 rounded-2xl outline-none">
+                                <option value="">Choisir la province</option>
+                                <option value="Estuaire">Estuaire</option>
+                                <option value="Haut-Ogooué">Haut-Ogooué</option>
+                                <option value="Moyen-Ogooué">Moyen-Ogooué</option>
+                                <option value="Ngounié">Ngounié</option>
+                                <option value="Nyanga">Nyanga</option>
+                                <option value="Ogooué-Ivindo">Ogooué-Ivindo</option>
+                                <option value="Ogooué-Lolo">Ogooué-Lolo</option>
+                                <option value="Ogooué-Maritime">Ogooué-Maritime</option>
+                                <option value="Woleu-Ntem">Woleu-Ntem</option>
+                            </select>
+                            <input type="tel" id="profPhone" placeholder="Numéro WhatsApp (Privé)" class="bg-slate-50 border-2 border-slate-100 p-4 rounded-2xl outline-none" required>
+                        </div>
+
+                        <div class="p-4 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50">
+                            <p class="text-[10px] font-black text-slate-400 uppercase mb-2">Pièce d'identité (Visible Admin uniquement)</p>
+                            <label class="flex items-center gap-4 cursor-pointer">
+                                <div class="bg-white p-3 rounded-xl border"><i class="fa-solid fa-id-card text-slate-400"></i></div>
+                                <span id="idFileName" class="text-xs text-slate-500 font-bold">Télécharger Recto/Verso</span>
+                                <input type="file" id="idCardInput" accept="image/*" class="hidden">
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="saveProfileBtn" class="w-full bg-gab-blue text-white py-5 rounded-2xl font-black uppercase tracking-widest shadow-lg">Mettre à jour le profil</button>
+                    <button type="button" onclick="signOutUser()" class="w-full text-red-500 font-bold text-xs uppercase py-2">Déconnexion</button>
                 </form>
             </div>
         </section>
 
-        <!-- SECTION: COMMANDES -->
-        <section id="section-orders" class="hidden max-w-4xl mx-auto py-10 animate-fade-in">
-            <h2 class="text-3xl font-black text-slate-800 mb-8">Historique d'achats</h2>
-            <div id="orderList" class="space-y-4"></div>
+        <!-- SECTION: PUBLIER -->
+        <section id="section-publish" class="hidden max-w-xl mx-auto py-10 animate-fade-in">
+            <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden">
+                <div class="bg-gab-green p-6 text-white text-center">
+                    <h2 class="text-xl font-black uppercase">Vendre un article</h2>
+                </div>
+                <form id="productForm" class="p-8 space-y-4">
+                    <input type="text" id="pName" placeholder="Nom du produit" class="w-full bg-slate-50 border-2 border-slate-100 p-4 rounded-2xl outline-none" required>
+                    <input type="number" id="pPrice" placeholder="Prix (FCFA)" class="w-full bg-slate-50 border-2 border-slate-100 p-4 rounded-2xl outline-none" required>
+                    
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-slate-400 uppercase">Photo de l'article</label>
+                        <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-slate-200 border-dashed rounded-2xl cursor-pointer bg-slate-50 hover:bg-slate-100">
+                            <i class="fa-solid fa-camera text-2xl text-slate-400 mb-2"></i>
+                            <input type="file" id="pImgFile" accept="image/*" capture="environment" class="hidden" />
+                        </label>
+                        <img id="previewImg" class="hidden w-full h-32 object-cover rounded-xl mt-2 border">
+                    </div>
+
+                    <button type="submit" id="publishBtn" class="w-full bg-gab-green text-white py-5 rounded-2xl font-black uppercase tracking-widest shadow-lg">Mettre en ligne</button>
+                </form>
+            </div>
         </section>
     </main>
-
-    <!-- MODAL AUTHENTIFICATION -->
-    <div id="authModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] hidden flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden p-8 animate-fade-in">
-            <div class="flex justify-between items-center mb-8">
-                <h2 id="authTitle" class="text-2xl font-black text-slate-800 uppercase italic">Connexion</h2>
-                <button onclick="toggleAuthModal()" class="text-2xl text-slate-300 hover:text-red-500">&times;</button>
-            </div>
-            <form id="authForm" class="space-y-4">
-                <div id="displayNameGroup" class="hidden">
-                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Nom complet</label>
-                    <input type="text" id="authName" class="w-full bg-slate-50 border-2 border-slate-100 p-4 rounded-2xl outline-none focus:border-gab-blue" placeholder="Ex: Jean Marc">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Email</label>
-                    <input type="email" id="authEmail" class="w-full bg-slate-50 border-2 border-slate-100 p-4 rounded-2xl outline-none focus:border-gab-blue" placeholder="votre@email.com" required>
-                </div>
-                <div>
-                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Mot de passe</label>
-                    <input type="password" id="authPassword" class="w-full bg-slate-50 border-2 border-slate-100 p-4 rounded-2xl outline-none focus:border-gab-blue" placeholder="••••••••" required>
-                </div>
-                <button type="submit" id="authSubmitBtn" class="w-full bg-gab-blue text-white py-5 rounded-2xl font-black uppercase tracking-widest hover:shadow-lg transition">Se connecter</button>
-            </form>
-            <div class="mt-6 text-center">
-                <button id="authSwitch" class="text-xs font-bold text-slate-500 hover:text-gab-blue underline">Pas de compte ? Créer un compte</button>
-            </div>
-        </div>
-    </div>
 
     <!-- SIDE CART -->
     <div id="cartSidebar" class="fixed inset-y-0 right-0 w-full md:w-96 bg-white shadow-2xl z-[100] transform translate-x-full transition-transform duration-300 flex flex-col">
         <div class="p-6 border-b flex justify-between items-center bg-slate-50">
-            <h3 class="font-black text-xl">Mon Panier</h3>
+            <h3 class="font-black text-xl italic text-gab-blue">Panier</h3>
             <button onclick="toggleCart()" class="text-2xl">&times;</button>
         </div>
         <div id="cartItems" class="flex-grow overflow-y-auto p-6 space-y-4"></div>
-        <div class="p-6 border-t bg-slate-50">
-            <button onclick="checkout()" class="w-full bg-gab-blue text-white py-5 rounded-2xl font-black uppercase tracking-widest">Commander</button>
+        <div class="p-6 border-t bg-slate-50 space-y-3">
+            <div class="flex justify-between font-black text-xl">
+                <span class="text-slate-400 uppercase text-xs self-center">Total</span>
+                <span id="cartTotal" class="text-gab-blue">0 FCFA</span>
+            </div>
+            <button onclick="generateReceiptAndSend()" id="checkoutBtn" class="w-full bg-gab-blue text-white py-5 rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-3">
+                <i class="fa-brands fa-whatsapp text-xl"></i> Confirmer
+            </button>
         </div>
     </div>
 
-    <div id="notif" class="fixed top-20 left-1/2 -translate-x-1/2 z-[300] bg-slate-800 text-white px-6 py-3 rounded-full text-xs font-bold shadow-2xl hidden"></div>
+    <!-- REÇU TEMPLATE (HIDDEN) -->
+    <div id="receipt-template">
+        <div class="text-center mb-4">
+            <h1 class="font-black text-xl">ECHOPPE<span class="text-blue-600">241</span></h1>
+            <p class="text-[10px] uppercase font-bold text-gab-green">Reçu de Commande</p>
+        </div>
+        <div class="border-y-2 border-dashed border-slate-200 py-4 my-4">
+            <p id="r-order-id" class="font-black text-slate-800 uppercase text-center"></p>
+            <div id="r-items" class="mt-4 space-y-2"></div>
+        </div>
+        <div class="flex justify-between items-center">
+            <div id="r-total" class="font-black text-2xl text-gab-blue"></div>
+            <div id="qrcode"></div>
+        </div>
+    </div>
+
+    <!-- MODAL AUTH -->
+    <div id="authModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-[2.5rem] p-8 animate-fade-in">
+            <h2 id="authTitle" class="text-xl font-black text-slate-800 uppercase mb-6 italic">Accès Membre</h2>
+            <form id="authForm" class="space-y-4">
+                <div id="displayNameGroup" class="hidden">
+                    <input type="text" id="authName" class="w-full bg-slate-50 border-2 border-slate-100 p-4 rounded-2xl outline-none" placeholder="Nom complet">
+                </div>
+                <input type="email" id="authEmail" class="w-full bg-slate-50 border-2 border-slate-100 p-4 rounded-2xl outline-none" placeholder="Email" required>
+                <input type="password" id="authPassword" class="w-full bg-slate-50 border-2 border-slate-100 p-4 rounded-2xl outline-none" placeholder="Mot de passe" required>
+                <button type="submit" class="w-full bg-gab-blue text-white py-4 rounded-2xl font-black uppercase">Valider</button>
+            </form>
+            <button id="authSwitch" class="w-full mt-4 text-xs font-bold text-slate-500">Créer un compte</button>
+        </div>
+    </div>
+
+    <div id="notif" class="fixed top-20 left-1/2 -translate-x-1/2 z-[300] bg-slate-800 text-white px-6 py-3 rounded-full text-[10px] font-black uppercase hidden"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, onSnapshot, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, doc, setDoc, getDoc, addDoc, query, onSnapshot, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // CONFIGURATION FIREBASE FOURNIE
         const firebaseConfig = {
             apiKey: "AIzaSyCEJJGhcyYWqmeI9D_lwk_qgE2J2GZhIlg",
             authDomain: "communautedugabon.firebaseapp.com",
-            databaseURL: "https://communautedugabon-default-rtdb.firebaseio.com",
             projectId: "communautedugabon",
             storageBucket: "communautedugabon.firebasestorage.app",
             messagingSenderId: "647862371022",
-            appId: "1:647862371022:web:b209bfc8eb81accb1fc69f",
-            measurementId: "G-T7415FPS91"
+            appId: "1:647862371022:web:b209bfc8eb81accb1fc69f"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const appId = "echoppe241-prod";
+        const appId = "echoppe241-v3-profiles";
+        const ADMIN_WHATSAPP = "24177736065";
 
         let currentUser = null;
-        let isSignUpMode = false;
         let cart = [];
+        let tempBase64 = { profile: "", idCard: "", product: "" };
 
-        const staticProducts = [
-            { id: 1, name: "Huile de Palme Rouge", price: 18000, province: "Ogooué-Lolo", img: "https://images.unsplash.com/photo-1620916566398-39f1143f2c0a?auto=format&fit=crop&w=400&q=80" },
-            { id: 2, name: "Atanga de Makokou", price: 3500, province: "Ogooué-Ivindo", img: "https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?auto=format&fit=crop&w=400&q=80" }
-        ];
-
-        onAuthStateChanged(auth, (user) => {
+        // INITIALISATION AUTH
+        onAuthStateChanged(auth, async (user) => {
             currentUser = user;
-            const btn = document.getElementById('authBtn');
             if (user) {
-                btn.innerHTML = `<i class="fa-solid fa-circle-user mr-2 text-gab-green"></i> ${user.displayName || 'Mon Profil'}`;
-                btn.onclick = logout;
-                loadOrders();
+                const docSnap = await getDoc(doc(db, 'artifacts', appId, 'users', user.uid, 'profile', 'info'));
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    document.getElementById('profilePreview').src = data.photo || `https://ui-avatars.com/api/?name=${user.displayName}`;
+                    document.getElementById('profName').value = data.name || user.displayName || "";
+                    document.getElementById('profBio').value = data.bio || "";
+                    document.getElementById('profProvince').value = data.province || "";
+                    document.getElementById('profPhone').value = data.phone || "";
+                }
                 closeAuthModal();
-            } else {
-                btn.innerHTML = `<i class="fa-solid fa-user mr-2"></i> Connexion`;
-                btn.onclick = toggleAuthModal;
             }
+            updateAuthBtn();
         });
 
+        function updateAuthBtn() {
+            const btn = document.getElementById('authBtn');
+            btn.innerHTML = currentUser ? `<img src="${document.getElementById('profilePreview').src}" class="w-6 h-6 rounded-full object-cover"> Profil` : `Connexion`;
+        }
+
+        window.handleAuthClick = () => { if (!currentUser) toggleAuthModal(); else showSection('profile'); };
+
+        // CONVERSION IMAGE
+        function handleImageUpload(inputId, previewId, key) {
+            document.getElementById(inputId).addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        tempBase64[key] = ev.target.result;
+                        if (previewId) {
+                            const prev = document.getElementById(previewId);
+                            prev.src = ev.target.result;
+                            prev.classList.remove('hidden');
+                        }
+                        if (inputId === 'idCardInput') document.getElementById('idFileName').innerText = file.name;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+        handleImageUpload('profileImgInput', 'profilePreview', 'profile');
+        handleImageUpload('idCardInput', null, 'idCard');
+        handleImageUpload('pImgFile', 'previewImg', 'product');
+
+        // MISE À JOUR PROFIL (PRIVÉ / PUBLIC)
+        document.getElementById('profileForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('saveProfileBtn');
+            btn.disabled = true; btn.innerText = "Enregistrement...";
+
+            try {
+                const profileData = {
+                    name: document.getElementById('profName').value,
+                    bio: document.getElementById('profBio').value,
+                    province: document.getElementById('profProvince').value,
+                    phone: document.getElementById('profPhone').value,
+                    photo: tempBase64.profile || document.getElementById('profilePreview').src,
+                    idCard: tempBase64.idCard || "", // Visible seulement par Admin et User
+                    updatedAt: serverTimestamp()
+                };
+
+                // Sauvegarde dans le document privé de l'utilisateur
+                await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'profile', 'info'), profileData);
+                
+                // Sauvegarde d'une version publique (sans ID Card ni téléphone complet si besoin)
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'sellers', currentUser.uid), {
+                    name: profileData.name,
+                    bio: profileData.bio,
+                    province: profileData.province,
+                    photo: profileData.photo
+                });
+
+                notify("Profil mis à jour !");
+                updateAuthBtn();
+            } catch (err) { notify("Erreur de sauvegarde"); }
+            finally { btn.disabled = false; btn.innerText = "Mettre à jour le profil"; }
+        };
+
+        // VENDRE PRODUIT
+        document.getElementById('productForm').onsubmit = async (e) => {
+            e.preventDefault();
+            if (!currentUser) return toggleAuthModal();
+            if (!tempBase64.product) return notify("Photo de l'article requise");
+
+            const btn = document.getElementById('publishBtn');
+            btn.disabled = true;
+            
+            const prodId = "241-" + Math.random().toString(36).substring(2, 6).toUpperCase();
+
+            try {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'products'), {
+                    prodId: prodId,
+                    name: document.getElementById('pName').value,
+                    price: parseInt(document.getElementById('pPrice').value),
+                    img: tempBase64.product,
+                    sellerId: currentUser.uid,
+                    createdAt: serverTimestamp()
+                });
+                notify("Article publié ! ID: " + prodId);
+                document.getElementById('productForm').reset();
+                document.getElementById('previewImg').classList.add('hidden');
+                tempBase64.product = "";
+                showSection('marketplace');
+            } catch (err) { notify("Erreur Firebase"); }
+            finally { btn.disabled = false; }
+        };
+
+        // MARKETPLACE
+        onSnapshot(query(collection(db, 'artifacts', appId, 'public', 'products'), orderBy('createdAt', 'desc')), (snap) => {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+            snap.forEach(async dDoc => {
+                const p = dDoc.data();
+                grid.innerHTML += `
+                    <div class="bg-white rounded-[2rem] overflow-hidden shadow-sm border border-slate-100 p-4 animate-fade-in group">
+                        <div class="relative mb-3 overflow-hidden rounded-2xl h-44">
+                            <img src="${p.img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            <span class="absolute top-2 left-2 bg-gab-yellow text-gab-blue text-[8px] font-black px-2 py-1 rounded-full uppercase">${p.prodId}</span>
+                        </div>
+                        <h3 class="font-black text-slate-800 truncate text-sm uppercase">${p.name}</h3>
+                        <p class="text-gab-blue font-black text-lg mb-4">${p.price.toLocaleString()} FCFA</p>
+                        <button onclick="window.addToCart('${p.prodId}', '${p.name.replace(/'/g, "\\'")}', ${p.price})" class="w-full bg-slate-900 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest active:scale-95 transition">Acheter</button>
+                    </div>`;
+            });
+        });
+
+        window.addToCart = (id, name, price) => { cart.push({ id, name, price }); updateCartUI(); notify("Ajouté !"); };
+        function updateCartUI() {
+            document.getElementById('cartCount').innerText = cart.length;
+            let total = 0;
+            document.getElementById('cartItems').innerHTML = cart.map((item, idx) => {
+                total += item.price;
+                return `<div class="flex justify-between items-center bg-slate-50 p-4 rounded-2xl border border-slate-100 animate-fade-in">
+                    <div><p class="text-[8px] font-black text-slate-400">#${item.id}</p><p class="text-xs font-bold">${item.name}</p></div>
+                    <button onclick="window.removeFromCart(${idx})" class="text-red-400"><i class="fa-solid fa-trash"></i></button>
+                </div>`;
+            }).join('');
+            document.getElementById('cartTotal').innerText = `${total.toLocaleString()} FCFA`;
+        }
+        window.removeFromCart = (idx) => { cart.splice(idx,1); updateCartUI(); };
+
+        window.generateReceiptAndSend = async () => {
+            if (cart.length === 0) return notify("Panier vide");
+            const orderId = "CMD-" + Date.now().toString().slice(-6);
+            const total = cart.reduce((a,b) => a + b.price, 0);
+
+            document.getElementById('r-order-id').innerText = orderId;
+            document.getElementById('r-total').innerText = total.toLocaleString() + " FCFA";
+            document.getElementById('r-items').innerHTML = cart.map(i => `<div class="flex justify-between text-xs font-bold uppercase"><span>${i.name}</span><span>${i.price}</span></div>`).join('');
+
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = '';
+            new QRCode(qrContainer, { text: orderId, width: 60, height: 60 });
+
+            setTimeout(async () => {
+                const msg = `🧾 *BON DE COMMANDE ECHOPPE241*%0A------------------------%0A*ID:* ${orderId}%0A*CLIENT:* ${currentUser?.displayName || 'Client'}%0A%0A*PANIER:*%0A${cart.map(i => `- ${i.name} (${i.id})`).join('%0A')}%0A%0A*TOTAL:* ${total.toLocaleString()} FCFA%0A------------------------%0A_Avez-vous bien reçu mon QR code ?_`;
+                window.open(`https://wa.me/${ADMIN_WHATSAPP}?text=${msg}`, '_blank');
+                cart = []; updateCartUI(); toggleCart();
+            }, 500);
+        };
+
+        // UI HELPERS
+        window.showSection = (id) => {
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(`section-${id}`).classList.remove('hidden');
+            window.scrollTo(0,0);
+        };
+        window.toggleAuthModal = () => document.getElementById('authModal').classList.toggle('hidden');
+        window.closeAuthModal = () => document.getElementById('authModal').classList.add('hidden');
+        window.toggleCart = () => document.getElementById('cartSidebar').classList.toggle('translate-x-full');
+        window.notify = (msg) => {
+            const el = document.getElementById('notif'); el.innerText = msg; el.classList.remove('hidden');
+            setTimeout(() => el.classList.add('hidden'), 3000);
+        };
+        window.signOutUser = () => signOut(auth).then(() => location.reload());
+
         document.getElementById('authSwitch').onclick = () => {
-            isSignUpMode = !isSignUpMode;
-            document.getElementById('authTitle').innerText = isSignUpMode ? "Créer un compte" : "Connexion";
-            document.getElementById('authSubmitBtn').innerText = isSignUpMode ? "S'inscrire" : "Se connecter";
-            document.getElementById('authSwitch').innerText = isSignUpMode ? "Déjà un compte ? Se connecter" : "Pas de compte ? Créer un compte";
-            document.getElementById('displayNameGroup').classList.toggle('hidden', !isSignUpMode);
+            const group = document.getElementById('displayNameGroup');
+            group.classList.toggle('hidden');
+            document.getElementById('authTitle').innerText = group.classList.contains('hidden') ? "Accès Membre" : "Rejoindre l'Echoppe";
+            document.getElementById('authSwitch').innerText = group.classList.contains('hidden') ? "Créer un compte" : "Déjà membre ?";
         };
 
         document.getElementById('authForm').onsubmit = async (e) => {
@@ -202,110 +406,15 @@
             const email = document.getElementById('authEmail').value;
             const pass = document.getElementById('authPassword').value;
             const name = document.getElementById('authName').value;
-            const btn = document.getElementById('authSubmitBtn');
-
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>...`;
-
             try {
-                if (isSignUpMode) {
+                if (!document.getElementById('displayNameGroup').classList.contains('hidden')) {
                     const res = await createUserWithEmailAndPassword(auth, email, pass);
                     await updateProfile(res.user, { displayName: name });
-                    notify("Compte créé avec succès !");
-                } else {
-                    await signInWithEmailAndPassword(auth, email, pass);
-                    notify("Heureux de vous revoir !");
-                }
-            } catch (err) {
-                notify("Erreur: " + err.message);
-            } finally {
-                btn.disabled = false;
-                btn.innerText = isSignUpMode ? "S'inscrire" : "Se connecter";
-            }
+                } else { await signInWithEmailAndPassword(auth, email, pass); }
+            } catch (err) { notify("Accès refusé"); }
         };
 
-        async function logout() {
-            await signOut(auth);
-            notify("Déconnecté.");
-            showSection('marketplace');
-        }
-
-        window.showSection = (id) => {
-            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-            document.getElementById(`section-${id}`).classList.remove('hidden');
-        };
-
-        window.checkAuthAndShow = (id) => {
-            if (!currentUser) { toggleAuthModal(); notify("Connectez-vous pour continuer."); }
-            else { showSection(id); }
-        };
-
-        window.toggleAuthModal = () => document.getElementById('authModal').classList.toggle('hidden');
-        window.closeAuthModal = () => document.getElementById('authModal').classList.add('hidden');
-        window.toggleCart = () => document.getElementById('cartSidebar').classList.toggle('translate-x-full');
-
-        window.notify = (msg) => {
-            const el = document.getElementById('notif');
-            el.innerText = msg; el.classList.remove('hidden');
-            setTimeout(() => el.classList.add('hidden'), 3000);
-        };
-
-        function renderProducts() {
-            const grid = document.getElementById('productGrid');
-            grid.innerHTML = staticProducts.map(p => `
-                <div class="bg-white rounded-[2rem] overflow-hidden shadow-sm border border-slate-100 p-5 hover:shadow-xl transition">
-                    <img src="${p.img}" class="w-full h-40 object-cover rounded-xl mb-4">
-                    <h3 class="font-bold text-slate-800">${p.name}</h3>
-                    <p class="text-gab-blue font-black mb-4">${p.price.toLocaleString()} FCFA</p>
-                    <button onclick="addToCart(${p.id})" class="w-full bg-slate-100 py-3 rounded-xl text-[10px] font-black uppercase hover:bg-gab-blue hover:text-white transition">Ajouter</button>
-                </div>
-            `).join('');
-        }
-
-        window.addToCart = (id) => {
-            cart.push(staticProducts.find(x => x.id === id));
-            updateCartUI();
-            notify("Ajouté au panier");
-        };
-
-        function updateCartUI() {
-            document.getElementById('cartCount').innerText = cart.length;
-            document.getElementById('cartItems').innerHTML = cart.map((item, idx) => `
-                <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl">
-                    <span class="text-xs font-bold">${item.name}</span>
-                    <button onclick="removeFromCart(${idx})" class="text-red-400">&times;</button>
-                </div>
-            `).join('');
-        }
-        
-        window.removeFromCart = (idx) => { cart.splice(idx,1); updateCartUI(); };
-
-        window.checkout = async () => {
-            if (!currentUser) return toggleAuthModal();
-            if (cart.length === 0) return notify("Panier vide");
-            
-            await addDoc(collection(db, 'artifacts', appId, 'users', currentUser.uid, 'orders'), {
-                total: cart.reduce((a,b) => a + b.price, 0),
-                items: cart,
-                createdAt: serverTimestamp()
-            });
-            cart = []; updateCartUI(); toggleCart(); showSection('orders'); notify("Succès !");
-        };
-
-        function loadOrders() {
-            if (!currentUser) return;
-            const q = query(collection(db, 'artifacts', appId, 'users', currentUser.uid, 'orders'), orderBy('createdAt', 'desc'));
-            onSnapshot(q, (snap) => {
-                const list = document.getElementById('orderList');
-                list.innerHTML = snap.empty ? '<p class="text-slate-400">Aucune commande.</p>' : '';
-                snap.forEach(doc => {
-                    const o = doc.data();
-                    list.innerHTML += `<div class="bg-white p-6 rounded-3xl border border-slate-100 flex justify-between"><div><b>${o.total.toLocaleString()} FCFA</b><p class="text-[10px] text-slate-400">#${doc.id.slice(0,5)}</p></div><span class="text-gab-green font-bold text-xs uppercase">En cours</span></div>`;
-                });
-            }, (err) => console.log(err));
-        }
-
-        renderProducts();
+        window.checkAuthAndShow = (id) => { if (!currentUser) toggleAuthModal(); else showSection(id); };
     </script>
 </body>
 </html>
