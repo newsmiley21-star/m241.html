@@ -3,647 +3,462 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Echoppe241 | Premium</title> 
+    <title>Echoppe241 | Le Marché 100% Gabonais</title> 
     
-    <!-- PWA CONFIG -->
-    <meta name="mobile-web-app-capable" content="yes">
+    <!-- PWA & SEO Gabon -->
+    <link rel="icon" type="image/png" href="https://i.ibb.co/RkhcRdCs/echoppe241-logo.png">
+    <link rel="apple-touch-icon" href="https://i.ibb.co/RkhcRdCs/echoppe241-logo.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#00853f">
-    <link rel="icon" type="image/png" href="https://i.ibb.co/RkhcRdCs/echoppe241-logo.png">
+    <meta name="description" content="Echoppe241 : Votre marché digital de proximité au Gabon. Achetez et vendez vos produits locaux en toute sécurité.">
     
+    <!-- Bibliothèques externes -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        :root { 
-            --emerald-primary: #00853f; 
-            --emerald-dark: #006b32;
-            --gold-accent: #fcd116; 
-            --slate-bg: #fdfdfd; 
-        }
-
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: var(--slate-bg); 
-            -webkit-tap-highlight-color: transparent;
-            color: #1a202c;
-        }
-
-        .glass-nav { 
-            background: rgba(255, 255, 255, 0.85); 
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px); 
-        }
-
-        .view { display: none; opacity: 0; transform: translateY(12px); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        :root { --emerald: #00853f; --emerald-dark: #006b32; --gabon-yellow: #fcd116; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #1e293b; overflow-x: hidden; }
+        
+        /* Animations et Transitions */
+        .view { display: none; opacity: 0; transform: translateY(15px); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         .view.active { display: block; opacity: 1; transform: translateY(0); }
+        
+        /* Composants Premium */
+        .glass-header { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(241, 245, 249, 1); }
+        .btn-primary { background: linear-gradient(135deg, var(--emerald), var(--emerald-dark)); box-shadow: 0 10px 25px -5px rgba(0, 133, 63, 0.4); transition: all 0.3s ease; color: white; }
+        .btn-primary:active { transform: scale(0.96); }
+        .card-premium { background: white; border-radius: 28px; border: 1px solid #f1f5f9; box-shadow: 0 4px 20px rgba(0,0,0,0.03); overflow: hidden; }
+        .premium-input { background: #f1f5f9; border: 2px solid transparent; border-radius: 18px; padding: 16px 20px; font-weight: 600; width: 100%; transition: all 0.3s; }
+        .premium-input:focus { border-color: var(--emerald); background: white; outline: none; box-shadow: 0 0 0 4px rgba(0, 133, 63, 0.1); }
+        
+        /* Navigation basse */
+        .tab-btn { position: relative; transition: all 0.3s; }
+        .tab-btn.active i { color: var(--emerald); transform: translateY(-3px); }
+        .tab-btn.active::after { content: ''; position: absolute; bottom: -8px; width: 4px; height: 4px; background: var(--emerald); border-radius: 50%; }
 
-        .btn-primary {
-            background: linear-gradient(135deg, var(--emerald-primary), var(--emerald-dark));
-            box-shadow: 0 10px 20px -5px rgba(0, 133, 63, 0.3);
-            transition: all 0.3s ease;
-        }
-        .btn-primary:active { transform: scale(0.95); opacity: 0.9; }
-
-        .card-premium {
-            background: white;
-            border-radius: 32px;
-            border: 1px solid rgba(226, 232, 240, 0.6);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-            transition: all 0.3s ease;
-        }
-        .card-premium:hover { box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05); transform: translateY(-4px); }
-
-        .tab-icon { transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .tab-btn.active .tab-icon { color: var(--emerald-primary); transform: translateY(-6px) scale(1.1); }
-        .tab-btn.active .tab-label { color: var(--emerald-primary); font-weight: 700; opacity: 1; }
-
-        #splash { 
-            position: fixed; inset: 0; z-index: 9999; background: #fff; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-        }
-
-        .category-pill {
-            white-space: nowrap;
-            padding: 12px 24px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            transition: all 0.2s ease;
-            border: 1.5px solid #f1f5f9;
-        }
-        .category-pill.active {
-            background: var(--emerald-primary);
-            color: white;
-            border-color: var(--emerald-primary);
-            box-shadow: 0 8px 16px -4px rgba(0, 133, 63, 0.3);
-        }
-
-        /* Custom inputs */
-        .premium-input {
-            background: #f8fafc;
-            border: 2px solid transparent;
-            border-radius: 20px;
-            padding: 16px 20px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        .premium-input:focus {
-            background: white;
-            border-color: var(--emerald-primary);
-            box-shadow: 0 0 0 4px rgba(0, 133, 63, 0.1);
-            outline: none;
-        }
-
-        .no-scrollbar::-webkit-scrollbar { display: none; }
+        /* Splash Screen */
+        #splash { position: fixed; inset: 0; z-index: 9999; background: white; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .loader-bar { width: 120px; height: 4px; background: #f1f5f9; border-radius: 10px; margin-top: 20px; overflow: hidden; }
+        .loader-progress { width: 40%; height: 100%; background: var(--emerald); animation: load 1.5s infinite ease-in-out; }
+        @keyframes load { 0% { transform: translateX(-100%); } 100% { transform: translateX(250%); } }
     </style>
 </head>
-<body>
+<body class="pb-24">
 
-    <!-- SPLASH SCREEN ANIMÉ -->
+    <!-- Splash Screen -->
     <div id="splash">
-        <div class="relative">
-            <div class="absolute inset-0 bg-emerald-100 rounded-full blur-3xl opacity-30 animate-pulse"></div>
-            <img src="https://i.ibb.co/RkhcRdCs/echoppe241-logo.png" class="w-24 relative z-10">
-        </div>
-        <p class="mt-8 text-[10px] font-black uppercase tracking-[0.5em] text-slate-300">Echoppe241 Gabon</p>
+        <img src="https://i.ibb.co/RkhcRdCs/echoppe241-logo.png" class="w-24 mb-4">
+        <h2 class="text-xl font-black italic uppercase tracking-tighter">Echoppe<span class="text-emerald-700">241</span></h2>
+        <div class="loader-bar"><div class="loader-progress"></div></div>
     </div>
 
-    <!-- NAVBAR PREMIUM -->
-    <header class="sticky top-0 z-50 glass-nav border-b border-slate-100/50 px-6 h-20 flex items-center justify-between">
-        <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
-            <div class="w-10 h-10 bg-emerald-50 rounded-2xl flex items-center justify-center">
-                <img src="https://i.ibb.co/RkhcRdCs/echoppe241-logo.png" class="w-7">
-            </div>
-            <div>
-                <h1 class="text-lg font-black italic uppercase tracking-tighter leading-none">Echoppe<span class="text-emerald-700">241</span></h1>
-                <p class="text-[7px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Marché National</p>
+    <!-- HEADER FLOTTANT -->
+    <header class="sticky top-0 z-50 glass-header px-6 h-20 flex items-center justify-between">
+        <div class="flex items-center gap-3" onclick="navigateTo('home')">
+            <img src="https://i.ibb.co/RkhcRdCs/echoppe241-logo.png" class="w-10">
+            <div class="leading-none">
+                <h1 class="text-lg font-black uppercase tracking-tighter">Echoppe<span class="text-emerald-700">241</span></h1>
+                <p class="text-[8px] font-bold text-slate-400 tracking-widest uppercase">Marché National</p>
             </div>
         </div>
         
         <div id="user-header" class="hidden flex items-center gap-3">
+            <div id="admin-badge" class="hidden bg-red-100 text-red-600 text-[8px] font-black px-2 py-1 rounded-full uppercase">Admin</div>
             <div class="text-right">
-                <p id="h-balance" class="text-xs font-black text-emerald-700 leading-none">0 F</p>
-                <p id="h-name" class="text-[8px] font-bold text-slate-400 uppercase truncate max-w-[80px]">Utilisateur</p>
+                <p id="h-balance" class="text-xs font-black text-emerald-700">0 F</p>
+                <p id="h-name" class="text-[9px] font-bold text-slate-400 uppercase">Chargement...</p>
             </div>
-            <img id="h-avatar" class="w-10 h-10 rounded-full border-2 border-white shadow-md object-cover bg-slate-100" onclick="navigateTo('profile')">
+            <div class="relative" onclick="navigateTo('profile')">
+                <img id="h-avatar" class="w-11 h-11 rounded-full border-2 border-white shadow-md object-cover">
+                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full"></div>
+            </div>
         </div>
-        <button id="h-login" onclick="navigateTo('auth')" class="btn-primary text-white px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest">Connexion</button>
+        <button id="h-login" onclick="navigateTo('auth')" class="btn-primary px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest">Connexion</button>
     </header>
 
-    <main class="max-w-4xl mx-auto px-4 pt-8 pb-32">
+    <main class="max-w-4xl mx-auto px-4 pt-6">
         
-        <!-- VUE : MARCHÉ -->
+        <!-- VUE : ACCUEIL / MARCHÉ -->
         <div id="view-home" class="view active">
-            <section class="mb-10">
-                <h2 class="text-4xl font-black italic uppercase leading-[0.85] tracking-tighter mb-8">
-                    Découvrez le meilleur<br>
-                    <span class="text-emerald-700">Du terroir gabonais.</span>
-                </h2>
-                
-                <div class="flex gap-3 overflow-x-auto no-scrollbar py-2" id="categories">
-                    <button onclick="setCat('all')" class="category-pill active">Tout</button>
-                    <button onclick="setCat('Agriculture')" class="category-pill">Agriculture</button>
-                    <button onclick="setCat('Artisanat')" class="category-pill">Artisanat</button>
-                    <button onclick="setCat('Pêche')" class="category-pill">Pêche</button>
-                    <button onclick="setCat('Électronique')" class="category-pill">Électronique</button>
-                </div>
-            </section>
+            <!-- Filtre Rapide -->
+            <div class="flex gap-2 overflow-x-auto pb-6 no-scrollbar">
+                <button onclick="filterProducts('all')" class="bg-white px-6 py-3 rounded-2xl shadow-sm text-[10px] font-black uppercase whitespace-nowrap border border-slate-100">Tout</button>
+                <button onclick="filterProducts('Estuaire')" class="bg-white px-6 py-3 rounded-2xl shadow-sm text-[10px] font-black uppercase whitespace-nowrap border border-slate-100">Estuaire</button>
+                <button onclick="filterProducts('Ogooué')" class="bg-white px-6 py-3 rounded-2xl shadow-sm text-[10px] font-black uppercase whitespace-nowrap border border-slate-100">Ogooué</button>
+                <button onclick="filterProducts('Woleu-Ntem')" class="bg-white px-6 py-3 rounded-2xl shadow-sm text-[10px] font-black uppercase whitespace-nowrap border border-slate-100">Woleu-Ntem</button>
+            </div>
 
-            <div id="grid-products" class="grid grid-cols-2 md:grid-cols-3 gap-6">
-                <!-- Produits injectés ici -->
+            <div class="flex justify-between items-end mb-6">
+                <h2 class="text-3xl font-black italic uppercase tracking-tighter leading-none">Arrivages <br><span class="text-emerald-700">du Jour</span></h2>
+                <button onclick="navigateTo('publish')" class="text-[10px] font-black text-emerald-700 uppercase underline decoration-2 underline-offset-4">Vendre un produit</button>
+            </div>
+
+            <div id="grid-products" class="grid grid-cols-2 md:grid-cols-3 gap-4 lg:gap-6">
+                <!-- Squelette de chargement -->
+                <div class="animate-pulse bg-white h-64 rounded-3xl"></div>
+                <div class="animate-pulse bg-white h-64 rounded-3xl"></div>
             </div>
         </div>
 
         <!-- VUE : AUTHENTIFICATION -->
-        <div id="view-auth" class="view max-w-sm mx-auto mt-10">
-            <div class="bg-white p-10 rounded-[40px] shadow-2xl border border-slate-50">
-                <div class="text-center mb-10">
-                    <img src="https://i.ibb.co/RkhcRdCs/echoppe241-logo.png" class="w-16 mx-auto mb-4 grayscale opacity-20">
-                    <h3 id="auth-title" class="text-2xl font-black italic uppercase tracking-tighter">Bienvenue</h3>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Accédez à votre espace</p>
-                </div>
-                
+        <div id="view-auth" class="view max-w-sm mx-auto">
+            <div class="card-premium p-10 text-center">
+                <h3 id="auth-title" class="text-2xl font-black italic uppercase mb-8">Espace Membre</h3>
                 <div class="space-y-4">
-                    <div id="signup-fields" class="hidden">
-                        <input type="text" id="auth-name" placeholder="Nom complet" class="premium-input w-full">
+                    <div id="signup-fields" class="hidden space-y-4">
+                        <input type="text" id="auth-name" placeholder="Nom complet" class="premium-input">
                     </div>
-                    <input type="email" id="auth-email" placeholder="Email" class="premium-input w-full">
-                    <input type="password" id="auth-pass" placeholder="Mot de passe" class="premium-input w-full">
-                    
-                    <button onclick="submitAuth()" class="btn-primary w-full text-white font-black py-5 rounded-[25px] uppercase tracking-widest mt-4">
-                        Continuer
-                    </button>
-                    
-                    <button onclick="toggleAuth()" id="auth-switch" class="w-full text-[9px] font-black uppercase text-slate-400 underline pt-4 tracking-widest">
-                        Créer un compte
-                    </button>
+                    <input type="email" id="auth-email" placeholder="Email" class="premium-input">
+                    <input type="password" id="auth-pass" placeholder="Mot de passe" class="premium-input">
+                    <button onclick="handleAuth()" id="btn-auth-submit" class="btn-primary w-full py-5 rounded-[22px] font-black uppercase tracking-widest mt-4">Continuer</button>
+                    <button onclick="toggleAuthMode()" id="auth-switch" class="text-[10px] font-black uppercase text-slate-400 mt-4 block mx-auto underline">Nouveau ? Créer un compte</button>
                 </div>
             </div>
         </div>
 
-        <!-- VUE : PUBLIER -->
-        <div id="view-publish" class="view max-w-xl mx-auto">
-            <div class="bg-white p-8 rounded-[40px] shadow-xl border border-slate-50">
-                <h3 class="text-2xl font-black italic uppercase mb-8 tracking-tighter">Vendre un <span class="text-emerald-700">Produit</span></h3>
+        <!-- VUE : RECHARGE (ECHOPEPAY) -->
+        <div id="view-recharge" class="view max-w-xl mx-auto">
+            <div class="card-premium p-8">
+                <div class="flex items-center justify-between mb-8">
+                    <h3 class="text-2xl font-black italic uppercase">Echoppe<span class="text-emerald-700">Pay</span></h3>
+                    <span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-[9px] font-black uppercase">Paiement Sécurisé</span>
+                </div>
                 
+                <div class="bg-slate-50 border border-slate-100 rounded-3xl p-6 mb-8">
+                    <p class="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest">Procédure de recharge</p>
+                    <ul class="space-y-3 text-xs font-bold leading-relaxed">
+                        <li class="flex gap-3"><span class="w-5 h-5 bg-emerald-600 text-white rounded-full flex items-center justify-center text-[10px]">1</span> Envoyez par Airtel Money au <span class="text-emerald-700">077 73 60 65</span></li>
+                        <li class="flex gap-3"><span class="w-5 h-5 bg-emerald-600 text-white rounded-full flex items-center justify-center text-[10px]">2</span> Capturez le message de confirmation reçu</li>
+                        <li class="flex gap-3"><span class="w-5 h-5 bg-emerald-600 text-white rounded-full flex items-center justify-center text-[10px]">3</span> Envoyez la capture et le montant ci-dessous</li>
+                    </ul>
+                </div>
+
                 <div class="space-y-6">
-                    <div onclick="document.getElementById('file-p').click()" class="w-full h-64 bg-slate-50 rounded-[35px] border-2 border-dashed border-slate-200 flex flex-col items-center justify-center cursor-pointer overflow-hidden group">
-                        <div id="p-preview" class="text-center group-hover:scale-110 transition-transform">
-                            <i class="fa-solid fa-camera-retro text-4xl text-slate-200 mb-3"></i>
-                            <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">Ajouter une photo</p>
+                    <div onclick="document.getElementById('file-proof').click()" class="w-full h-48 bg-slate-50 border-2 border-dashed border-slate-200 rounded-[30px] flex flex-col items-center justify-center cursor-pointer overflow-hidden transition-all hover:border-emerald-300">
+                        <div id="proof-preview" class="text-center px-4">
+                            <i class="fa-solid fa-cloud-arrow-up text-4xl text-slate-300 mb-2"></i>
+                            <p class="text-[9px] font-black text-slate-400 uppercase">Cliquez pour joindre la preuve d'envoi</p>
                         </div>
-                        <input type="file" id="file-p" class="hidden" accept="image/*">
+                        <input type="file" id="file-proof" class="hidden" accept="image/*">
                     </div>
+                    <input type="number" id="recharge-amount" placeholder="Montant déposé (FCFA)" class="premium-input text-center text-xl">
+                    <button onclick="submitRechargeRequest()" id="btn-recharge" class="btn-primary w-full py-5 rounded-[22px] font-black uppercase shadow-emerald-200">Envoyer pour validation</button>
+                </div>
+            </div>
+        </div>
 
-                    <input type="text" id="p-title" placeholder="Que vendez-vous ?" class="premium-input w-full">
-                    
-                    <div class="grid grid-cols-2 gap-4">
-                        <input type="number" id="p-price" placeholder="Prix (FCFA)" class="premium-input w-full">
-                        <select id="p-cat" class="premium-input w-full">
-                            <option value="Agriculture">Agriculture</option>
-                            <option value="Artisanat">Artisanat</option>
-                            <option value="Pêche">Pêche</option>
-                            <option value="Électronique">Électronique</option>
-                        </select>
-                    </div>
+        <!-- VUE : PANEL ADMIN (Dépôts) -->
+        <div id="view-admin" class="view max-w-2xl mx-auto">
+            <h2 class="text-3xl font-black italic uppercase tracking-tighter mb-8">Demandes de <span class="text-red-600">Recharge</span></h2>
+            <div id="admin-requests-list" class="space-y-4">
+                <p class="text-center py-20 text-slate-300 font-bold uppercase text-[10px]">Aucune demande en attente</p>
+            </div>
+        </div>
 
-                    <select id="p-prov" class="premium-input w-full">
-                        <option value="Estuaire">Estuaire (Libreville)</option>
-                        <option value="Ogooué-Maritime">Ogooué-Maritime (POG)</option>
-                        <option value="Haut-Ogooué">Haut-Ogooué (Franceville)</option>
-                        <option value="Woleu-Ntem">Woleu-Ntem (Oyem)</option>
-                    </select>
-
-                    <button onclick="handlePublish()" id="btn-pub" class="btn-primary w-full text-white font-black py-5 rounded-[25px] uppercase tracking-widest">
-                        Mettre en vente
+        <!-- VUE : PROFIL & RÉGLAGES -->
+        <div id="view-profile" class="view max-w-xl mx-auto">
+            <div class="card-premium p-10 text-center mb-8">
+                <div class="relative w-32 h-32 mx-auto mb-6">
+                    <img id="p-avatar" class="w-full h-full rounded-full border-4 border-white shadow-xl object-cover bg-slate-100">
+                    <button onclick="document.getElementById('change-avatar').click()" class="absolute bottom-0 right-0 w-10 h-10 bg-white shadow-lg rounded-full flex items-center justify-center border border-slate-100">
+                        <i class="fa-solid fa-camera text-slate-400 text-sm"></i>
                     </button>
+                    <input type="file" id="change-avatar" class="hidden" accept="image/*">
                 </div>
-            </div>
-        </div>
-
-        <!-- VUE : PANIER -->
-        <div id="view-cart" class="view max-w-xl mx-auto">
-            <div class="flex justify-between items-end mb-8">
-                <h2 class="text-4xl font-black italic uppercase tracking-tighter">Votre <span class="text-emerald-700">Panier</span></h2>
-                <button onclick="clearCart()" class="text-[9px] font-black text-red-500 uppercase tracking-widest mb-2">Vider</button>
-            </div>
-
-            <div id="cart-items" class="space-y-4 mb-8">
-                <!-- Items -->
-            </div>
-
-            <div id="cart-empty" class="hidden text-center py-20 opacity-20">
-                <i class="fa-solid fa-cart-flatbed text-6xl mb-4"></i>
-                <p class="font-black uppercase tracking-widest">Le panier est vide</p>
-            </div>
-
-            <div id="cart-footer" class="bg-slate-900 rounded-[40px] p-8 text-white shadow-2xl">
-                <div class="flex justify-between items-center mb-6">
-                    <p class="text-[10px] font-black uppercase tracking-widest opacity-60">Total de la commande</p>
-                    <p id="c-total" class="text-3xl font-black italic">0 F</p>
-                </div>
-                <button onclick="handlePayment()" class="w-full bg-white text-slate-900 font-black py-5 rounded-[25px] uppercase tracking-widest btn-press flex items-center justify-center gap-3">
-                    <i class="fa-solid fa-lock text-xs"></i> Confirmer l'achat
-                </button>
-            </div>
-        </div>
-
-        <!-- VUE : PROFIL -->
-        <div id="view-profile" class="view">
-            <div class="card-premium p-10 mb-8 text-center relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-24 bg-emerald-700/5"></div>
                 
-                <div class="relative z-10">
-                    <div class="relative w-32 h-32 mx-auto mb-6">
-                        <img id="u-avatar" class="w-full h-full rounded-full object-cover border-4 border-white shadow-2xl bg-slate-100">
-                        <button onclick="document.getElementById('file-av').click()" class="absolute bottom-0 right-0 bg-emerald-600 text-white w-10 h-10 rounded-full border-4 border-white">
-                            <i class="fa-solid fa-pen text-[10px]"></i>
-                        </button>
-                        <input type="file" id="file-av" class="hidden" accept="image/*">
-                    </div>
-                    
-                    <h3 id="u-name" class="text-2xl font-black italic uppercase tracking-tighter">...</h3>
-                    <p id="u-email" class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.3em] mb-8">...</p>
+                <h3 id="p-name" class="text-2xl font-black italic uppercase mb-8">Utilisateur</h3>
 
-                    <div class="bg-gradient-to-br from-slate-900 to-emerald-900 rounded-[35px] p-8 text-left text-white shadow-2xl relative overflow-hidden">
-                        <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/5 rounded-full blur-3xl"></div>
-                        <p class="text-[9px] font-black uppercase tracking-[0.2em] opacity-50 mb-1">Portefeuille EchoppePay</p>
-                        <h4 id="u-balance" class="text-4xl font-black italic mb-8">0 FCFA</h4>
-                        <div class="grid grid-cols-2 gap-3">
-                            <button onclick="openTopup()" class="bg-white text-slate-900 text-[9px] font-black uppercase py-4 rounded-2xl tracking-widest active:scale-95">Recharger</button>
-                            <button class="bg-white/10 text-white text-[9px] font-black uppercase py-4 rounded-2xl tracking-widest opacity-50 cursor-not-allowed">Retrait</button>
-                        </div>
+                <!-- Portefeuille -->
+                <div class="bg-slate-900 rounded-[35px] p-8 text-white text-left shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-8 opacity-10"><i class="fa-solid fa-wallet text-6xl"></i></div>
+                    <p class="text-[10px] font-black uppercase tracking-widest opacity-40 mb-1">Solde Disponible</p>
+                    <h4 id="p-balance" class="text-4xl font-black italic mb-8 tracking-tighter">0 FCFA</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="navigateTo('recharge')" class="bg-emerald-600 py-4 rounded-2xl text-[9px] font-black uppercase tracking-widest">Recharger</button>
+                        <button onclick="msg('Service bientôt disponible')" class="bg-white/10 py-4 rounded-2xl text-[9px] font-black uppercase tracking-widest">Retrait</button>
                     </div>
+                </div>
+
+                <div id="admin-access" class="hidden mt-6">
+                    <button onclick="navigateTo('admin')" class="w-full py-5 border-2 border-red-500 text-red-500 rounded-2xl font-black uppercase text-[10px] hover:bg-red-50 transition-colors">Panel Admin Validation</button>
                 </div>
             </div>
 
-            <h5 class="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] mb-4 ml-6">Activité récente</h5>
-            <div id="order-history" class="space-y-3 mb-12">
-                <!-- Historique -->
-            </div>
-
-            <button onclick="handleLogout()" class="w-full py-5 bg-red-50 text-red-500 font-black rounded-[25px] text-[10px] uppercase tracking-widest border border-red-100">
-                Déconnexion
-            </button>
+            <button onclick="handleLogout()" class="w-full py-5 bg-red-50 text-red-500 font-black rounded-2xl text-[10px] uppercase shadow-sm">Se Déconnecter</button>
         </div>
 
     </main>
 
-    <!-- TAB BAR PREMIUM -->
-    <nav class="fixed bottom-0 left-0 right-0 h-24 glass-nav border-t border-slate-100/50 flex items-center justify-around px-8 z-[60] pb-6">
-        <button onclick="navigateTo('home')" class="tab-btn flex flex-col items-center gap-1.5 active">
-            <i class="fa-solid fa-grid-2 text-xl text-slate-300 tab-icon"></i>
-            <span class="text-[8px] font-black uppercase tracking-widest opacity-40 tab-label">Marché</span>
+    <!-- NAVIGATION BASSE -->
+    <nav class="fixed bottom-0 inset-x-0 h-24 glass-header flex items-center justify-around px-8 z-40 pb-6">
+        <button onclick="navigateTo('home')" class="tab-btn flex flex-col items-center gap-1 active">
+            <i class="fa-solid fa-store text-xl text-slate-300"></i>
+            <span class="text-[9px] font-black uppercase opacity-40">Marché</span>
         </button>
-        <button onclick="navigateTo('publish')" class="tab-btn flex flex-col items-center gap-1.5">
-            <div class="w-14 h-14 bg-emerald-700 text-white rounded-[22px] flex items-center justify-center shadow-lg shadow-emerald-200 -mt-12 border-4 border-white active:scale-90 transition-transform">
-                <i class="fa-solid fa-plus text-xl"></i>
+        <button onclick="navigateTo('publish')" class="tab-btn flex flex-col items-center gap-1">
+            <div class="w-12 h-12 bg-emerald-700 text-white rounded-2xl flex items-center justify-center -mt-10 shadow-lg border-4 border-white shadow-emerald-200">
+                <i class="fa-solid fa-plus text-lg"></i>
             </div>
-            <span class="text-[8px] font-black uppercase tracking-widest text-emerald-700 mt-1">Vendre</span>
+            <span class="text-[9px] font-black uppercase text-emerald-700 mt-1">Vendre</span>
         </button>
-        <button onclick="navigateTo('cart')" class="tab-btn relative flex flex-col items-center gap-1.5">
-            <i class="fa-solid fa-bag-shopping text-xl text-slate-300 tab-icon"></i>
-            <span id="cart-count" class="hidden absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[8px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-white font-black">0</span>
-            <span class="text-[8px] font-black uppercase tracking-widest opacity-40 tab-label">Panier</span>
-        </button>
-        <button onclick="navigateTo('profile')" class="tab-btn flex flex-col items-center gap-1.5">
-            <i class="fa-solid fa-user text-xl text-slate-300 tab-icon"></i>
-            <span class="text-[8px] font-black uppercase tracking-widest opacity-40 tab-label">Compte</span>
+        <button onclick="navigateTo('profile')" class="tab-btn flex flex-col items-center gap-1">
+            <i class="fa-solid fa-circle-user text-xl text-slate-300"></i>
+            <span class="text-[9px] font-black uppercase opacity-40">Compte</span>
         </button>
     </nav>
 
-    <!-- MODAL RECHARGEMENT -->
-    <div id="modal-topup" class="hidden fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-md flex items-center justify-center p-6">
-        <div class="bg-white rounded-[45px] p-10 w-full max-w-sm shadow-2xl text-center">
-            <h4 class="text-xl font-black italic uppercase mb-6">Echoppe<span class="text-emerald-700">Pay</span></h4>
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-8 leading-relaxed">
-                Envoyez via AirtelMoney ou MoovMoney au : <br>
-                <span class="text-emerald-700 text-2xl font-black">077 73 60 65</span>
-            </p>
-            <input type="number" id="topup-amount" placeholder="Montant à créditer" class="premium-input w-full text-center text-xl mb-6">
-            <button onclick="processTopup()" class="btn-primary w-full text-white font-black py-5 rounded-[22px] uppercase tracking-widest mb-4">Confirmer le dépôt</button>
-            <button onclick="closeTopup()" class="text-[9px] font-black uppercase text-slate-300 tracking-widest">Annuler</button>
-        </div>
+    <!-- Toast de notification -->
+    <div id="toast" class="hidden fixed bottom-28 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-8 py-4 rounded-full text-[11px] font-black uppercase z-[100] shadow-2xl flex items-center gap-3">
+        <i id="toast-icon" class="fa-solid fa-check text-emerald-400"></i>
+        <span id="toast-msg">Opération réussie</span>
     </div>
-
-    <!-- TOAST NOTIFICATION -->
-    <div id="toast" class="hidden fixed bottom-28 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-8 py-4 rounded-full text-[10px] font-black uppercase tracking-widest z-[1000] shadow-2xl"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, addDoc, updateDoc, serverTimestamp, increment, runTransaction } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, addDoc, updateDoc, deleteDoc, serverTimestamp, increment, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // FIREBASE SETUP
-        const firebaseConfig = {
-            apiKey: "AIzaSyCEJJGhcyYWqmeI9D_lwk_qgE2J2GZhIlg",
-            authDomain: "communautedugabon.firebaseapp.com",
-            projectId: "communautedugabon",
-            storageBucket: "communautedugabon.firebasestorage.app",
-            messagingSenderId: "647862371022",
-            appId: "1:647862371022:web:b209bfc8eb81accb1fc69f"
-        };
-
+        // Initialisation Firebase
+        const firebaseConfig = JSON.parse(__firebase_config);
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const appId = "echoppe241-premium-v1";
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'echoppe241-prod-v1';
 
+        // Constantes & Etat
+        const ADMIN_EMAIL = "contact@echoppe241.com";
         let userState = null;
-        let cart = [];
-        let curCat = 'all';
-        let tempImg = null;
-        let isAuthSignup = false;
+        let isSignup = false;
+        let tempProof = null;
+        let activeProvince = 'all';
 
-        // NAVIGATION
-        window.navigateTo = (v) => {
-            const priv = ['publish', 'cart', 'profile'];
-            if(priv.includes(v) && (!userState || auth.currentUser.isAnonymous)) return navigateTo('auth');
-            
-            document.querySelectorAll('.view').forEach(e => e.classList.remove('active'));
-            document.getElementById(`view-${v}`).classList.add('active');
-            
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            const map = {'home':0, 'publish':1, 'cart':2, 'profile':3}[v];
-            if(map !== undefined) document.querySelectorAll('.tab-btn')[map].classList.add('active');
-
-            if(v === 'home') syncProducts();
-            if(v === 'cart') syncCartUI();
-            if(v === 'profile') syncHistory();
-            window.scrollTo({top:0, behavior:'smooth'});
+        // AUTHENTIFICATION
+        window.toggleAuthMode = () => {
+            isSignup = !isSignup;
+            document.getElementById('auth-title').innerText = isSignup ? 'Nouveau Compte' : 'Espace Membre';
+            document.getElementById('signup-fields').classList.toggle('hidden', !isSignup);
+            document.getElementById('auth-switch').innerText = isSignup ? 'Déjà inscrit ? Connexion' : 'Nouveau ? Créer un compte';
         };
 
-        // AUTH LOGIC
-        window.toggleAuth = () => {
-            isAuthSignup = !isAuthSignup;
-            document.getElementById('auth-title').innerText = isAuthSignup ? 'Créer un compte' : 'Bienvenue';
-            document.getElementById('signup-fields').classList.toggle('hidden', !isAuthSignup);
-            document.getElementById('auth-switch').innerText = isAuthSignup ? 'Déjà inscrit ? Connexion' : 'Créer un compte';
-        };
-
-        window.submitAuth = async () => {
+        window.handleAuth = async () => {
             const email = document.getElementById('auth-email').value;
             const pass = document.getElementById('auth-pass').value;
-            if(!email || pass.length < 6) return msg("Identifiants invalides");
+            const btn = document.getElementById('btn-auth-submit');
+            
+            if(!email || !pass) return msg("Identifiants requis", "error");
+            btn.disabled = true; btn.innerText = "Traitement...";
 
             try {
-                if(isAuthSignup) {
-                    const name = document.getElementById('auth-name').value;
+                if(isSignup) {
+                    const name = document.getElementById('auth-name').value || "Utilisateur";
                     const res = await createUserWithEmailAndPassword(auth, email, pass);
-                    await setDoc(doc(db, 'artifacts', appId, 'users', res.user.uid), {
-                        uid: res.user.uid, fullName: name || "Citoyen", email, walletBalance: 0,
+                    const userData = {
+                        uid: res.user.uid,
+                        fullName: name,
+                        email: email,
+                        walletBalance: 0,
                         avatar: `https://ui-avatars.com/api/?name=${name}&background=00853f&color=fff`,
-                        at: serverTimestamp()
-                    });
+                        isAdmin: email === ADMIN_EMAIL,
+                        createdAt: serverTimestamp()
+                    };
+                    await setDoc(doc(db, 'artifacts', appId, 'users', res.user.uid), userData);
                 } else {
                     await signInWithEmailAndPassword(auth, email, pass);
                 }
                 navigateTo('home');
-            } catch(e) { msg("Erreur d'authentification"); }
+                msg("Bienvenue !");
+            } catch (e) {
+                msg("Erreur : Vérifiez vos infos", "error");
+            } finally {
+                btn.disabled = false; btn.innerText = "Continuer";
+            }
         };
 
+        // GESTION ETAT UTILISATEUR
         onAuthStateChanged(auth, (u) => {
-            if(u && !u.isAnonymous) {
+            if (u && !u.isAnonymous) {
                 onSnapshot(doc(db, 'artifacts', appId, 'users', u.uid), (snap) => {
-                    if(snap.exists()) {
+                    if (snap.exists()) {
                         userState = snap.data();
-                        refreshHeader();
-                        refreshProfile();
+                        updateInterface();
+                        if(userState.isAdmin) listenToRecharges();
                     }
                 });
             } else {
                 if(!u) signInAnonymously(auth);
                 userState = null;
-                refreshHeader();
+                updateInterface();
             }
-            setTimeout(() => document.getElementById('splash').style.display = 'none', 1000);
+            // Masquer Splash
+            setTimeout(() => document.getElementById('splash').style.display = 'none', 1200);
         });
 
-        function refreshHeader() {
-            const logged = userState && !auth.currentUser.isAnonymous;
-            document.getElementById('user-header').classList.toggle('hidden', !logged);
-            document.getElementById('h-login').classList.toggle('hidden', logged);
-            if(logged) {
+        function updateInterface() {
+            const isLogged = userState && !auth.currentUser.isAnonymous;
+            const isAdmin = userState?.isAdmin;
+
+            document.getElementById('user-header').classList.toggle('hidden', !isLogged);
+            document.getElementById('h-login').classList.toggle('hidden', isLogged);
+            document.getElementById('admin-badge').classList.toggle('hidden', !isAdmin);
+            document.getElementById('admin-access').classList.toggle('hidden', !isAdmin);
+
+            if (isLogged) {
                 document.getElementById('h-name').innerText = userState.fullName;
                 document.getElementById('h-balance').innerText = `${userState.walletBalance.toLocaleString()} F`;
                 document.getElementById('h-avatar').src = userState.avatar;
+                document.getElementById('p-name').innerText = userState.fullName;
+                document.getElementById('p-avatar').src = userState.avatar;
+                document.getElementById('p-balance').innerText = `${userState.walletBalance.toLocaleString()} FCFA`;
             }
         }
 
-        // MARCHÉ & PRODUITS
-        window.setCat = (c) => {
-            curCat = c;
-            document.querySelectorAll('.category-pill').forEach(p => {
-                p.classList.toggle('active', p.innerText.toLowerCase() === c.toLowerCase() || (c==='all' && p.innerText==='Tout'));
-            });
-            syncProducts();
+        // RECHARGE : ENVOI DE PREUVE
+        document.getElementById('file-proof').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if(!file) return;
+            const r = new FileReader();
+            r.onload = (ev) => {
+                tempProof = ev.target.result;
+                document.getElementById('proof-preview').innerHTML = `<img src="${tempProof}" class="w-full h-full object-cover">`;
+            };
+            r.readAsDataURL(file);
+        });
+
+        window.submitRechargeRequest = async () => {
+            const amount = parseInt(document.getElementById('recharge-amount').value);
+            if(!amount || !tempProof) return msg("Preuve et montant requis", "error");
+            
+            const btn = document.getElementById('btn-recharge');
+            btn.disabled = true; btn.innerText = "Envoi en cours...";
+
+            try {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'recharges'), {
+                    userId: userState.uid,
+                    userName: userState.fullName,
+                    amount: amount,
+                    proofImg: tempProof,
+                    status: 'pending',
+                    at: serverTimestamp()
+                });
+                msg("Demande envoyée ! Validation sous 1h.");
+                navigateTo('profile');
+                // Nettoyage
+                document.getElementById('recharge-amount').value = '';
+                tempProof = null;
+                document.getElementById('proof-preview').innerHTML = `<i class="fa-solid fa-cloud-arrow-up text-4xl text-slate-300 mb-2"></i><p class="text-[9px] font-black text-slate-400 uppercase">Preuve de paiement</p>`;
+            } catch (e) {
+                msg("Erreur d'envoi", "error");
+            } finally {
+                btn.disabled = false; btn.innerText = "Envoyer pour validation";
+            }
         };
 
-        function syncProducts() {
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'products'), (snap) => {
-                let items = snap.docs.map(d => ({id:d.id, ...d.data()}));
-                if(curCat !== 'all') items = items.filter(i => i.category === curCat);
+        // ADMIN : VALIDATION MANUELLE
+        function listenToRecharges() {
+            // Pas de filtres complexes pour éviter le besoin d'index au lancement
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'recharges'), (snap) => {
+                const list = document.getElementById('admin-requests-list');
+                const pending = snap.docs
+                    .map(d => ({id: d.id, ...d.data()}))
+                    .filter(r => r.status === 'pending');
 
-                const grid = document.getElementById('grid-products');
-                grid.innerHTML = items.map(p => `
-                    <div class="card-premium p-3 flex flex-col">
-                        <div class="h-44 rounded-[24px] overflow-hidden bg-slate-50 relative">
-                            <img src="${p.image}" class="w-full h-full object-cover">
-                            <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-[7px] font-black uppercase px-2 py-1 rounded-full text-emerald-700">${p.category}</span>
-                        </div>
-                        <div class="pt-4 px-1 pb-1 flex-1 flex flex-col justify-between">
+                if(pending.length === 0) {
+                    list.innerHTML = `<p class="text-center py-20 text-slate-300 font-bold uppercase text-[10px]">Aucune demande en attente</p>`;
+                    return;
+                }
+
+                list.innerHTML = pending.map(r => `
+                    <div class="card-premium p-6">
+                        <div class="flex justify-between items-start mb-4">
                             <div>
-                                <h4 class="font-bold text-[11px] uppercase truncate tracking-tight">${p.title}</h4>
-                                <p class="text-[8px] font-medium text-slate-400 mt-1"><i class="fa-solid fa-location-dot mr-1"></i>${p.province}</p>
+                                <h4 class="font-black text-sm uppercase">${r.userName}</h4>
+                                <p class="text-xl font-black text-emerald-700 tracking-tighter">${r.amount.toLocaleString()} FCFA</p>
                             </div>
-                            <div class="flex justify-between items-center mt-4">
-                                <p class="text-[13px] font-black italic">${p.price.toLocaleString()} F</p>
-                                <button onclick="addToCart(${JSON.stringify(p).replace(/"/g, '&quot;')})" class="w-9 h-9 btn-primary text-white rounded-xl flex items-center justify-center">
-                                    <i class="fa-solid fa-plus text-[10px]"></i>
-                                </button>
-                            </div>
+                            <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-[8px] font-black uppercase">Vérification</span>
+                        </div>
+                        <img src="${r.proofImg}" class="w-full h-56 object-cover rounded-2xl border mb-6 cursor-pointer" onclick="window.open(this.src)">
+                        <div class="grid grid-cols-2 gap-4">
+                            <button onclick="approveRecharge('${r.id}', '${r.userId}', ${r.amount})" class="bg-emerald-600 text-white font-black py-4 rounded-xl text-[10px] uppercase">Valider le dépôt</button>
+                            <button onclick="rejectRecharge('${r.id}')" class="bg-red-50 text-red-500 font-black py-4 rounded-xl text-[10px] uppercase">Rejeter</button>
                         </div>
                     </div>
                 `).join('');
             });
         }
 
-        // PANIER
-        window.addToCart = (p) => {
-            if(!userState) return navigateTo('auth');
-            if(p.sellerId === userState.uid) return msg("C'est votre produit !");
-            cart.push(p);
-            updateCartBadge();
-            msg("Ajouté au panier");
-        };
-
-        function updateCartBadge() {
-            const el = document.getElementById('cart-count');
-            el.innerText = cart.length;
-            el.classList.toggle('hidden', cart.length === 0);
-        }
-
-        function syncCartUI() {
-            const list = document.getElementById('cart-items');
-            const footer = document.getElementById('cart-footer');
-            const empty = document.getElementById('cart-empty');
-
-            if(cart.length === 0) {
-                list.innerHTML = '';
-                footer.classList.add('hidden');
-                empty.classList.remove('hidden');
-                return;
-            }
-
-            footer.classList.remove('hidden');
-            empty.classList.add('hidden');
-
-            let total = 0;
-            list.innerHTML = cart.map((p, i) => {
-                total += p.price;
-                return `
-                    <div class="card-premium p-4 flex items-center gap-4">
-                        <img src="${p.image}" class="w-16 h-16 rounded-2xl object-cover">
-                        <div class="flex-1">
-                            <h5 class="font-bold text-[10px] uppercase truncate">${p.title}</h5>
-                            <p class="text-emerald-700 font-black text-sm">${p.price.toLocaleString()} F</p>
-                        </div>
-                        <button onclick="popCart(${i})" class="w-10 h-10 text-slate-200 hover:text-red-500 transition-colors">
-                            <i class="fa-solid fa-circle-xmark text-xl"></i>
-                        </button>
-                    </div>
-                `;
-            }).join('');
-            document.getElementById('c-total').innerText = `${total.toLocaleString()} F`;
-        }
-
-        window.popCart = (i) => { cart.splice(i, 1); syncCartUI(); updateCartBadge(); };
-        window.clearCart = () => { cart = []; syncCartUI(); updateCartBadge(); };
-
-        window.handlePayment = async () => {
-            const total = cart.reduce((s, p) => s + p.price, 0);
-            if(userState.walletBalance < total) return msg("Solde insuffisant");
-
+        window.approveRecharge = async (docId, uid, amt) => {
+            if(!confirm(`Confirmez-vous avoir reçu ${amt} F ?`)) return;
             try {
-                await runTransaction(db, async (t) => {
-                    const bRef = doc(db, 'artifacts', appId, 'users', userState.uid);
-                    t.update(bRef, { walletBalance: increment(-total) });
-
-                    for(const p of cart) {
-                        const sRef = doc(db, 'artifacts', appId, 'users', p.sellerId);
-                        t.update(sRef, { walletBalance: increment(p.price) });
-
-                        const oRef = doc(collection(db, 'artifacts', appId, 'public', 'data', 'orders'));
-                        t.set(oRef, {
-                            buyer: userState.uid, seller: p.sellerId,
-                            title: p.title, price: p.price, image: p.image,
-                            at: serverTimestamp()
-                        });
-                    }
-                });
-                cart = []; updateCartBadge(); msg("Achat validé !"); navigateTo('profile');
-            } catch(e) { msg("Échec du paiement"); }
+                // On met à jour le solde de l'utilisateur ET on marque la demande complétée
+                await updateDoc(doc(db, 'artifacts', appId, 'users', uid), { walletBalance: increment(amt) });
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'recharges', docId), { status: 'completed' });
+                msg("Portefeuille crédité !");
+            } catch (e) { msg("Erreur de validation", "error"); }
         };
 
-        // PUBLICATION
-        document.getElementById('file-p').addEventListener('change', (e) => {
-            const reader = new FileReader();
-            reader.onload = (re) => {
-                tempImg = re.target.result;
-                document.getElementById('p-preview').innerHTML = `<img src="${tempImg}" class="w-full h-full object-cover">`;
-            };
-            reader.readAsDataURL(e.target.files[0]);
-        });
-
-        window.handlePublish = async () => {
-            const t = document.getElementById('p-title').value;
-            const p = parseInt(document.getElementById('p-price').value);
-            const c = document.getElementById('p-cat').value;
-            const v = document.getElementById('p-prov').value;
-
-            if(!t || !p || !tempImg) return msg("Formulaire incomplet");
-
-            const b = document.getElementById('btn-pub');
-            b.disabled = true; b.innerText = "Mise en ligne...";
-
-            try {
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'products'), {
-                    title: t, price: p, category: c, province: v, image: tempImg,
-                    sellerId: userState.uid, at: serverTimestamp()
-                });
-                msg("Annonce publiée"); navigateTo('home');
-                // Reset
-                document.getElementById('p-title').value = '';
-                document.getElementById('p-price').value = '';
-                tempImg = null;
-                document.getElementById('p-preview').innerHTML = `<i class="fa-solid fa-camera-retro text-4xl text-slate-200 mb-3"></i><p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">Ajouter une photo</p>`;
-            } catch(e) { msg("Erreur serveur"); }
-            finally { b.disabled = false; b.innerText = "Mettre en vente"; }
+        window.rejectRecharge = async (id) => {
+            if(!confirm("Supprimer cette demande invalide ?")) return;
+            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'recharges', id));
+            msg("Demande supprimée");
         };
 
-        // PROFIL & PORTEFEUILLE
-        function refreshProfile() {
-            document.getElementById('u-avatar').src = userState.avatar;
-            document.getElementById('u-name').innerText = userState.fullName;
-            document.getElementById('u-email').innerText = userState.email;
-            document.getElementById('u-balance').innerText = `${userState.walletBalance.toLocaleString()} FCFA`;
-        }
+        // NAVIGATION & UI
+        window.navigateTo = (v) => {
+            // Garde d'accès
+            if(['recharge', 'profile', 'admin'].includes(v) && (!userState || auth.currentUser.isAnonymous)) return navigateTo('auth');
+            if(v === 'admin' && !userState.isAdmin) return msg("Accès refusé", "error");
 
-        window.openTopup = () => document.getElementById('modal-topup').classList.remove('hidden');
-        window.closeTopup = () => document.getElementById('modal-topup').classList.add('hidden');
-        window.processTopup = async () => {
-            const val = parseInt(document.getElementById('topup-amount').value);
-            if(!val || val < 100) return msg("Minimum 100 F");
-            await updateDoc(doc(db, 'artifacts', appId, 'users', userState.uid), { walletBalance: increment(val) });
-            msg("Solde mis à jour"); closeTopup();
+            document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+            document.getElementById(`view-${v}`).classList.add('active');
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            const map = {'home':0, 'publish':1, 'profile':2}[v];
+            if(map !== undefined) document.querySelectorAll('.tab-btn')[map].classList.add('active');
+            window.scrollTo({top:0, behavior:'smooth'});
         };
 
-        function syncHistory() {
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'orders'), (snap) => {
-                const list = document.getElementById('order-history');
-                const mine = snap.docs.map(d => d.data()).filter(o => o.buyer === userState.uid || o.seller === userState.uid);
-                
-                if(mine.length === 0) {
-                    list.innerHTML = `<p class="text-[9px] text-center text-slate-300 uppercase py-10 font-bold">Aucune activité</p>`;
-                    return;
-                }
-
-                list.innerHTML = mine.sort((a,b) => b.at - a.at).map(o => {
-                    const isBuy = o.buyer === userState.uid;
-                    return `
-                        <div class="bg-white p-4 rounded-3xl flex items-center gap-4 border border-slate-50 shadow-sm">
-                            <img src="${o.image}" class="w-12 h-12 rounded-2xl object-cover">
-                            <div class="flex-1">
-                                <h6 class="font-bold text-[10px] uppercase truncate">${o.title}</h6>
-                                <p class="text-[8px] font-bold text-slate-400">${isBuy ? 'ACHAT' : 'VENTE'} • ${new Date(o.at?.seconds*1000).toLocaleDateString()}</p>
-                            </div>
-                            <span class="font-black text-sm ${isBuy ? 'text-red-500' : 'text-emerald-700'}">${isBuy?'-':'+'}${o.price.toLocaleString()} F</span>
-                        </div>
-                    `;
-                }).join('');
-            });
-        }
-
-        document.getElementById('file-av').addEventListener('change', (e) => {
-            const reader = new FileReader();
-            reader.onload = async (re) => {
-                await updateDoc(doc(db, 'artifacts', appId, 'users', userState.uid), { avatar: re.target.result });
-                msg("Avatar mis à jour");
-            };
-            reader.readAsDataURL(e.target.files[0]);
-        });
-
-        function msg(m) {
-            const t = document.getElementById('toast'); t.innerText = m;
-            t.classList.remove('hidden'); setTimeout(() => t.classList.add('hidden'), 3000);
+        function msg(m, type = 'success') {
+            const t = document.getElementById('toast');
+            const icon = document.getElementById('toast-icon');
+            document.getElementById('toast-msg').innerText = m;
+            
+            icon.className = type === 'error' ? 'fa-solid fa-circle-exclamation text-red-400' : 'fa-solid fa-check text-emerald-400';
+            t.classList.remove('hidden');
+            setTimeout(() => t.classList.add('hidden'), 3500);
         }
 
         window.handleLogout = () => signOut(auth).then(() => location.reload());
+
+        // Marketplace (Statique pour démo dans ce bloc, à relier à vos produits réels)
+        const products = [
+            { id: 1, name: "Manioc d'Oyem", price: 2500, province: "Woleu-Ntem", img: "https://images.unsplash.com/photo-1590779033100-9f60a05a013d?auto=format&fit=crop&w=400" },
+            { id: 2, name: "Poisson Fumé POG", price: 5000, province: "Ogooué", img: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=400" },
+            { id: 3, name: "Banane Plantain", price: 1500, province: "Estuaire", img: "https://images.unsplash.com/photo-1528825871115-3581a5387919?auto=format&fit=crop&w=400" }
+        ];
+
+        function renderProducts() {
+            const grid = document.getElementById('grid-products');
+            grid.innerHTML = products.map(p => `
+                <div class="card-premium group">
+                    <div class="relative h-48">
+                        <img src="${p.img}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute top-3 left-3 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest">${p.province}</div>
+                    </div>
+                    <div class="p-4">
+                        <h4 class="font-bold text-xs mb-1 uppercase">${p.name}</h4>
+                        <div class="flex justify-between items-center">
+                            <p class="text-emerald-700 font-black italic">${p.price.toLocaleString()} F</p>
+                            <button onclick="msg('Vérifiez votre solde')" class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center text-[10px]"><i class="fa-solid fa-cart-shopping"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        window.onload = renderProducts;
 
     </script>
 </body>
