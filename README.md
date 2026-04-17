@@ -5,19 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Echoppe241 | Officiel</title> 
     
-    <link rel="icon" type="image/png" href="https://i.ibb.co/RkhcRdCs/echoppe241-logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root { 
-            --primary-blue: #3a75c4; /* Bleu */
-            --accent-yellow: #fcd116; /* Jaune */
-            --subtle-green: #00853f; /* Vert subtil */
+            --primary-blue: #3a75c4;
+            --accent-yellow: #fcd116;
+            --subtle-green: #00853f;
             --white: #ffffff;
             --dark: #0f172a;
-            --bg-soft: #f8fafc;
         }
 
         body { font-family: 'Inter', sans-serif; background-color: var(--white); color: var(--dark); margin: 0; overflow-x: hidden; }
@@ -27,40 +25,25 @@
         .view.active { display: block; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Splash Screen */
-        #splash-screen {
-            position: fixed; inset: 0; background: var(--white); z-index: 9999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.5s ease;
-        }
-
-        /* UI Elements */
         .card-neo { background: var(--white); border-radius: 24px; border: 1px solid #f1f5f9; box-shadow: 0 4px 12px rgba(58, 117, 196, 0.05); }
+        .btn-blue { background: var(--primary-blue); color: var(--white); padding: 18px; border-radius: 20px; font-weight: 800; text-transform: uppercase; font-size: 11px; width: 100%; transition: 0.2s; border: none; cursor: pointer; }
+        .btn-blue:disabled { opacity: 0.5; cursor: not-allowed; }
         
-        /* Buttons */
-        .btn-blue { background: var(--primary-blue); color: var(--white); padding: 18px; border-radius: 20px; font-weight: 800; text-transform: uppercase; font-size: 11px; width: 100%; transition: 0.2s; }
-        .btn-blue:active { transform: scale(0.98); opacity: 0.9; }
-        
-        .btn-yellow { background: var(--accent-yellow); color: var(--dark); padding: 12px; border-radius: 16px; font-weight: 700; font-size: 10px; text-transform: uppercase; }
-
         .input-custom { background: #f8fafc; border-radius: 16px; padding: 16px; width: 100%; font-size: 14px; border: 2px solid transparent; outline: none; transition: 0.3s; }
         .input-custom:focus { border-color: var(--primary-blue); background: var(--white); }
 
-        /* Toasts */
-        #toast {
-            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
-            z-index: 10000; background: var(--dark); color: var(--white);
-            padding: 12px 24px; border-radius: 50px; font-size: 11px; font-weight: 700; display: none;
-        }
+        #toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); z-index: 10000; background: var(--dark); color: var(--white); padding: 12px 24px; border-radius: 50px; font-size: 11px; font-weight: 700; display: none; }
 
-        .nav-item { color: #cbd5e1; transition: 0.3s; }
+        .nav-item { color: #cbd5e1; transition: 0.3s; text-align: center; flex: 1; }
         .nav-item.active { color: var(--primary-blue); }
-        
-        /* Subtle Green Touch */
-        .green-dot { width: 8px; height: 8px; background: var(--subtle-green); border-radius: full; }
-        .verified-badge { background: rgba(0, 133, 63, 0.1); color: var(--subtle-green); font-size: 9px; font-weight: 800; padding: 4px 12px; border-radius: 20px; }
 
         .modal-full { position: fixed; inset: 0; background: var(--white); z-index: 9000; overflow-y: auto; padding: 32px 24px; display: none; }
+        
+        #splash-screen { position: fixed; inset: 0; background: var(--white); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease; }
+        
+        .chat-bubble { max-width: 80%; padding: 12px 16px; border-radius: 20px; font-size: 14px; margin-bottom: 8px; }
+        .chat-me { background: var(--primary-blue); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .chat-them { background: #f1f5f9; color: var(--dark); align-self: flex-start; border-bottom-left-radius: 4px; }
     </style>
 </head>
 <body class="pb-24">
@@ -77,43 +60,37 @@
         </div>
     </div>
 
-    <!-- MODAL EDITION PROFIL -->
-    <div id="edit-profile-modal" class="modal-full">
-        <div class="max-w-md mx-auto">
-            <div class="flex items-center justify-between mb-10">
-                <h2 class="text-2xl font-black text-blue-900">votre profil.</h2>
-                <button onclick="closeModal('edit-profile-modal')" class="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center"><i class="fa-solid fa-times"></i></button>
+    <!-- VUE AUTH (CONNEXION/INSCRIPTION) -->
+    <div id="view-auth" class="view active min-h-screen flex items-center px-6">
+        <div class="w-full max-w-md mx-auto">
+            <div class="text-center mb-10">
+                <img src="https://i.ibb.co/RkhcRdCs/echoppe241-logo.png" class="w-20 mx-auto mb-4">
+                <h1 class="text-3xl font-black text-blue-900">Bienvenue.</h1>
+                <p class="text-slate-400 text-sm mt-2">Le marché gabonais dans votre poche.</p>
             </div>
 
-            <div class="flex flex-col items-center mb-10">
-                <div class="relative">
-                    <img id="edit-avatar-preview" class="w-28 h-28 rounded-[35px] object-cover bg-slate-50 border-4 border-white shadow-xl">
-                    <button onclick="regenerateAvatar()" class="absolute -bottom-2 -right-2 w-10 h-10 bg-[#fcd116] shadow-lg rounded-2xl flex items-center justify-center text-blue-900">
-                        <i class="fa-solid fa-arrows-rotate"></i>
-                    </button>
+            <div id="auth-forms">
+                <!-- Login -->
+                <div id="login-form" class="space-y-4">
+                    <input type="email" id="login-email" class="input-custom" placeholder="Email">
+                    <input type="password" id="login-pass" class="input-custom" placeholder="Mot de passe">
+                    <button onclick="handleLogin()" id="btn-login" class="btn-blue shadow-lg shadow-blue-100">Se connecter</button>
+                    <p class="text-center text-xs text-slate-500 mt-4">Pas de compte ? <span onclick="toggleAuth('register')" class="text-blue-600 font-bold cursor-pointer">S'inscrire</span></p>
                 </div>
-                <p class="text-[10px] font-black text-slate-400 mt-6 uppercase tracking-[0.2em]">personnalisation</p>
-            </div>
 
-            <div class="space-y-5">
-                <div>
-                    <label class="text-[10px] font-bold uppercase text-slate-400 ml-2">Nom public</label>
-                    <input type="text" id="edit-name" class="input-custom mt-1" placeholder="Votre nom">
+                <!-- Register -->
+                <div id="register-form" class="space-y-4 hidden">
+                    <input type="text" id="reg-name" class="input-custom" placeholder="Nom complet">
+                    <input type="email" id="reg-email" class="input-custom" placeholder="Email">
+                    <input type="password" id="reg-pass" class="input-custom" placeholder="Mot de passe (min 6 car.)">
+                    <button onclick="handleRegister()" id="btn-register" class="btn-blue bg-[#00853f]">Créer mon compte</button>
+                    <p class="text-center text-xs text-slate-500 mt-4">Déjà inscrit ? <span onclick="toggleAuth('login')" class="text-blue-600 font-bold cursor-pointer">Connexion</span></p>
                 </div>
-                <div>
-                    <label class="text-[10px] font-bold uppercase text-slate-400 ml-2">Bio vendeur</label>
-                    <textarea id="edit-bio" class="input-custom mt-1 h-28" placeholder="Parlez de vous ou de vos produits..."></textarea>
-                </div>
-                <div>
-                    <label class="text-[10px] font-bold uppercase text-slate-400 ml-2">Numéro WhatsApp</label>
-                    <input type="tel" id="edit-whatsapp" class="input-custom mt-1" placeholder="077... / 066...">
-                </div>
-                <button onclick="saveProfile()" class="btn-blue mt-6 shadow-lg shadow-blue-200">Enregistrer les changements</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL PUBLICATION PRODUIT -->
+    <!-- MODALS -->
     <div id="publish-modal" class="modal-full">
         <div class="max-w-md mx-auto">
             <div class="flex items-center justify-between mb-10">
@@ -121,370 +98,349 @@
                 <button onclick="closeModal('publish-modal')" class="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center"><i class="fa-solid fa-times"></i></button>
             </div>
             <div class="space-y-5">
-                <input type="text" id="pub-name" class="input-custom" placeholder="Nom du produit (ex: Manioc)">
+                <input type="text" id="pub-name" class="input-custom" placeholder="Nom du produit">
                 <input type="number" id="pub-price" class="input-custom" placeholder="Prix en FCFA">
-                <textarea id="pub-desc" class="input-custom h-32" placeholder="Description, origine, quantité disponible..."></textarea>
-                <input type="text" id="pub-img" class="input-custom" placeholder="URL de l'image (optionnel)">
-                <button onclick="publishProduct()" class="btn-blue mt-4">Mettre en vente</button>
+                <textarea id="pub-desc" class="input-custom h-32" placeholder="Description..."></textarea>
+                <input type="text" id="pub-img" class="input-custom" placeholder="URL Image (ex: Unsplash)">
+                <button onclick="publishProduct()" class="btn-blue">Mettre en vente</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL RECHARGE (ECHOPPE PAY) -->
     <div id="recharge-modal" class="modal-full">
         <div class="max-w-md mx-auto">
             <div class="flex items-center justify-between mb-8">
-                <h2 class="text-2xl font-black text-blue-900">recharger.</h2>
+                <h2 class="text-2xl font-black text-blue-900">echoppepay.</h2>
                 <button onclick="closeModal('recharge-modal')" class="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center"><i class="fa-solid fa-times"></i></button>
             </div>
-            
-            <div class="bg-blue-50 p-6 rounded-3xl mb-8 border border-blue-100">
-                <p class="text-xs font-bold text-blue-800 mb-4">Envoyez votre paiement aux numéros officiels :</p>
-                <div class="space-y-3">
-                    <div class="flex items-center justify-between bg-white p-4 rounded-2xl">
-                        <span class="text-[10px] font-black text-slate-400 uppercase">Airtel Money</span>
-                        <span class="font-black text-blue-900">077 73 60 65</span>
-                    </div>
-                    <div class="flex items-center justify-between bg-white p-4 rounded-2xl">
-                        <span class="text-[10px] font-black text-slate-400 uppercase">Moov Money</span>
-                        <span class="font-black text-blue-900">066 45 71 72</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="space-y-5">
-                <p class="text-[10px] font-black uppercase text-slate-400 text-center">Puis remplissez ce formulaire</p>
-                <input type="number" id="rech-amount" class="input-custom" placeholder="Montant envoyé">
-                <input type="text" id="rech-ref" class="input-custom" placeholder="ID de transaction / Référence">
-                <button onclick="submitRecharge()" class="btn-blue bg-[#00853f]">Valider ma recharge</button>
+            <div class="bg-blue-50 p-6 rounded-3xl mb-8">
+                <p class="text-xs font-bold text-blue-800 mb-2">Paiement Manuel :</p>
+                <p class="text-[10px] text-blue-600 mb-4">Envoyez au 077 73 60 65 (Airtel) ou 066 45 71 72 (Moov)</p>
+                <input type="number" id="rech-amount" class="input-custom mb-3" placeholder="Montant">
+                <input type="text" id="rech-ref" class="input-custom mb-4" placeholder="Référence Transaction">
+                <button onclick="submitRecharge()" class="btn-blue bg-[#00853f]">Soumettre aux Admins</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL DÉTAIL PRODUIT -->
+    <div id="chat-modal" class="modal-full !p-0">
+        <div class="flex flex-col h-full">
+            <div class="p-6 border-b border-slate-50 flex items-center gap-4">
+                <button onclick="closeModal('chat-modal')" class="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center"><i class="fa-solid fa-arrow-left"></i></button>
+                <div>
+                    <h3 id="chat-title" class="font-black text-blue-900">Chat</h3>
+                    <p class="text-[10px] text-slate-400 uppercase font-bold">Vendeur Echoppe</p>
+                </div>
+            </div>
+            <div id="chat-messages" class="flex-1 overflow-y-auto p-6 flex flex-col gap-2 bg-slate-50/30"></div>
+            <div class="p-4 border-t border-slate-50 bg-white flex gap-2">
+                <input type="text" id="chat-input" class="input-custom !py-3" placeholder="Votre message...">
+                <button onclick="sendChatMessage()" class="w-12 h-12 bg-blue-600 text-white rounded-2xl"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
     <div id="detail-modal" class="modal-full">
-        <div id="detail-content" class="max-w-md mx-auto">
-            <!-- Injecté dynamiquement -->
-        </div>
+        <div id="detail-content" class="max-w-md mx-auto"></div>
     </div>
 
-    <!-- HEADER NAVIGATION -->
-    <header class="fixed top-0 inset-x-0 z-[500] h-20 px-6 flex items-center justify-between bg-white/90 backdrop-blur-xl border-b border-slate-50">
-        <div class="flex items-center gap-2">
-            <img src="https://i.ibb.co/RkhcRdCs/echoppe241-logo.png" class="w-8 h-8">
-            <h1 class="text-xl font-black italic text-blue-900">echoppe<span class="text-[#fcd116]">241</span></h1>
-        </div>
-        <div class="flex items-center gap-4">
-            <div class="text-right">
-                <p id="header-balance" class="text-[13px] font-black text-blue-600">0 F</p>
-                <div class="flex items-center justify-end gap-1">
-                    <div class="green-dot"></div>
-                    <span class="text-[8px] font-bold uppercase text-slate-400">Pay</span>
+    <!-- MAIN APP WRAPPER (HIDDEN IF NOT AUTH) -->
+    <div id="app-content" style="display:none">
+        <header class="fixed top-0 inset-x-0 z-[500] h-20 px-6 flex items-center justify-between bg-white/90 backdrop-blur-xl border-b border-slate-50">
+            <div class="flex items-center gap-2">
+                <img src="https://i.ibb.co/RkhcRdCs/echoppe241-logo.png" class="w-8 h-8">
+                <h1 class="text-xl font-black italic text-blue-900">echoppe<span class="text-[#fcd116]">241</span></h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="text-right">
+                    <p id="header-balance" class="text-[13px] font-black text-blue-600">0 F</p>
+                    <span class="text-[8px] font-bold uppercase text-slate-400">EchoppePay</span>
                 </div>
+                <img id="header-avatar" onclick="navigateTo('profile')" class="w-10 h-10 rounded-2xl bg-slate-50 border-2 border-white shadow-sm object-cover">
             </div>
-            <img id="header-avatar" onclick="navigateTo('profile')" class="w-10 h-10 rounded-2xl bg-slate-50 cursor-pointer object-cover border-2 border-white shadow-sm">
-        </div>
-    </header>
+        </header>
 
-    <main class="max-w-xl mx-auto px-6 pt-24 pb-12">
-        <!-- VUE ACCUEIL -->
-        <div id="view-home" class="view active">
-            <div class="flex items-center justify-between mb-8">
-                <h2 class="text-3xl font-black text-blue-900 leading-tight">Le Marché<br><span class="text-[#fcd116]">Gabonais.</span></h2>
-                <button class="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-blue-900">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
+        <main class="max-w-xl mx-auto px-6 pt-24 pb-12">
+            <!-- ACCUEIL -->
+            <div id="view-home" class="view active">
+                <h2 class="text-3xl font-black text-blue-900 mb-8 leading-tight">Le Marché<br><span class="text-[#fcd116]">Gabonais.</span></h2>
+                <div id="product-list" class="grid grid-cols-2 gap-4"></div>
             </div>
-            
-            <div id="product-list" class="grid grid-cols-2 gap-4">
-                <!-- Chargement dynamique -->
-            </div>
-        </div>
 
-        <!-- VUE PROFIL -->
-        <div id="view-profile" class="view">
-            <div class="card-neo p-6 mb-6">
-                <div class="flex items-start justify-between mb-6">
-                    <img id="p-img" class="w-24 h-24 rounded-[32px] object-cover bg-slate-50 shadow-md">
-                    <div class="flex flex-col items-end gap-2">
-                        <span id="p-status-badge" class="verified-badge">Standard</span>
-                        <button onclick="openEditProfile()" class="px-5 py-2.5 bg-blue-50 text-blue-600 text-[10px] font-black uppercase rounded-xl">
-                            Éditer
-                        </button>
+            <!-- CHATS LIST -->
+            <div id="view-messages" class="view">
+                <h2 class="text-3xl font-black text-blue-900 mb-8">Messages.</h2>
+                <div id="conversations-list" class="space-y-3"></div>
+            </div>
+
+            <!-- PROFIL -->
+            <div id="view-profile" class="view">
+                <div class="card-neo p-6 mb-6 text-center">
+                    <img id="p-img" class="w-24 h-24 rounded-3xl mx-auto mb-4 border-4 border-white shadow-lg object-cover">
+                    <h3 id="p-name" class="text-2xl font-black text-blue-900">...</h3>
+                    <p id="p-email" class="text-xs text-slate-400 mb-6">...</p>
+                    
+                    <div class="bg-blue-600 p-5 rounded-3xl text-white">
+                        <p class="text-[9px] font-bold opacity-60 uppercase tracking-widest mb-1">Portefeuille EchoppePay</p>
+                        <p id="p-wallet" class="text-xl font-black">0 FCFA</p>
                     </div>
                 </div>
-                <h3 id="p-name" class="text-2xl font-black text-blue-900">...</h3>
-                <p id="p-bio" class="text-sm text-slate-500 mt-2 leading-relaxed">Bienvenue sur votre profil Echoppe241.</p>
-                
-                <div class="grid grid-cols-2 gap-3 mt-8">
-                    <div class="bg-blue-600 p-5 rounded-3xl text-white shadow-lg shadow-blue-100">
-                        <p class="text-[9px] font-bold opacity-60 uppercase tracking-widest mb-1">Portefeuille</p>
-                        <p id="p-wallet" class="text-xl font-black italic">0 FCFA</p>
-                    </div>
-                    <div class="bg-[#fcd116] p-5 rounded-3xl text-blue-900">
-                        <p class="text-[9px] font-bold opacity-60 uppercase tracking-widest mb-1">Annonces</p>
-                        <p id="p-ad-count" class="text-xl font-black italic">0</p>
-                    </div>
+
+                <div class="space-y-3">
+                    <button onclick="openModal('recharge-modal')" class="w-full p-5 bg-white border border-slate-100 rounded-2xl flex items-center justify-between">
+                        <span class="text-xs font-bold uppercase text-slate-700">Recharger Mon Solde</span>
+                        <i class="fa-solid fa-plus text-blue-600"></i>
+                    </button>
+                    <button onclick="openModal('publish-modal')" class="w-full p-5 bg-white border border-slate-100 rounded-2xl flex items-center justify-between">
+                        <span class="text-xs font-bold uppercase text-slate-700">Vendre un article</span>
+                        <i class="fa-solid fa-box text-blue-600"></i>
+                    </button>
+                    <button onclick="handleLogout()" class="w-full p-4 text-red-500 text-[10px] font-black uppercase">Déconnexion</button>
                 </div>
             </div>
+        </main>
 
-            <div class="space-y-3">
-                <button onclick="openModal('recharge-modal')" class="w-full p-5 bg-white border border-slate-100 rounded-2xl flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 bg-emerald-50 text-[#00853f] rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-bolt"></i></div>
-                        <span class="text-xs font-bold uppercase text-slate-700">Recharger via Mobile Money</span>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-slate-300"></i>
-                </button>
-                <button onclick="openModal('publish-modal')" class="w-full p-5 bg-white border border-slate-100 rounded-2xl flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-box-open"></i></div>
-                        <span class="text-xs font-bold uppercase text-slate-700">Publier un produit</span>
-                    </div>
-                    <i class="fa-solid fa-plus text-slate-300"></i>
-                </button>
-            </div>
-        </div>
-    </main>
-
-    <!-- TAB BAR -->
-    <nav class="fixed bottom-0 inset-x-0 h-22 bg-white/95 backdrop-blur-xl border-t border-slate-50 flex items-center justify-around px-8 pb-4">
-        <button onclick="navigateTo('home')" id="nav-home" class="nav-item flex flex-col items-center gap-1.5 active">
-            <i class="fa-solid fa-house-chimney text-xl"></i>
-            <span class="text-[9px] font-black uppercase">Home</span>
-        </button>
-        <button onclick="navigateTo('profile')" id="nav-profile" class="nav-item flex flex-col items-center gap-1.5">
-            <i class="fa-solid fa-circle-user text-xl"></i>
-            <span class="text-[9px] font-black uppercase">Compte</span>
-        </button>
-    </nav>
+        <nav class="fixed bottom-0 inset-x-0 h-20 bg-white border-t border-slate-100 flex items-center justify-around px-4 pb-2 z-[500]">
+            <button onclick="navigateTo('home')" id="nav-home" class="nav-item active"><i class="fa-solid fa-house-chimney text-lg"></i><p class="text-[8px] font-bold mt-1">ACCUEIL</p></button>
+            <button onclick="navigateTo('messages')" id="nav-messages" class="nav-item"><i class="fa-solid fa-comment-dots text-lg"></i><p class="text-[8px] font-bold mt-1">CHAT</p></button>
+            <button onclick="navigateTo('profile')" id="nav-profile" class="nav-item"><i class="fa-solid fa-user-ninja text-lg"></i><p class="text-[8px] font-bold mt-1">COMPTE</p></button>
+        </nav>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, updateDoc, setDoc, collection, addDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, setDoc, updateDoc, collection, addDoc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // CONFIGURATION OFFICIELLE
         const firebaseConfig = {
             apiKey: "AIzaSyCEJJGhcyYWqmeI9D_lwk_qgE2J2GZhIlg",
             authDomain: "communautedugabon.firebaseapp.com",
             projectId: "communautedugabon",
             storageBucket: "communautedugabon.firebasestorage.app",
             messagingSenderId: "647862371022",
-            appId: "1:647862371022:web:b209bfc8eb81accb1fc69f",
-            measurementId: "G-T7415FPS91"
+            appId: "1:647862371022:web:b209bfc8eb81accb1fc69f"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const appId = 'echoppe241-prod-final';
+        const appId = 'echoppe241-stable-v1';
 
-        let currentUser = null;
-        let allProducts = [];
+        let user = null;
+        let userData = null;
+        let activeChatId = null;
 
-        onAuthStateChanged(auth, async (u) => {
+        // AUTH LOGIC
+        onAuthStateChanged(auth, (u) => {
             if (u) {
+                user = u;
                 onSnapshot(doc(db, 'artifacts', appId, 'users', u.uid), (snap) => {
                     if (snap.exists()) {
-                        currentUser = { uid: u.uid, ...snap.data() };
-                        updateUI();
+                        userData = snap.data();
+                        document.getElementById('view-auth').classList.remove('active');
+                        document.getElementById('app-content').style.display = 'block';
+                        updateProfileUI();
+                        loadHomeData();
                     } else {
-                        const initData = {
-                            fullName: "Membre Echoppe",
+                        // Init profile if missing
+                        setDoc(doc(db, 'artifacts', appId, 'users', u.uid), {
+                            fullName: u.displayName || "Utilisateur",
+                            email: u.email,
                             walletBalance: 0,
-                            bio: "Gabonais et fier de l'être.",
-                            avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.uid}`,
-                            isVerified: false,
-                            adCount: 0,
-                            createdAt: new Date().toISOString()
-                        };
-                        setDoc(doc(db, 'artifacts', appId, 'users', u.uid), initData);
+                            avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.uid}`
+                        });
                     }
                 });
-
-                // Écouter les produits
-                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'products'), (snap) => {
-                    allProducts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                    renderProducts();
-                });
-
-            } else { signInAnonymously(auth); }
+            } else {
+                user = null;
+                document.getElementById('app-content').style.display = 'none';
+                document.getElementById('view-auth').classList.add('active');
+            }
+            hideSplash();
         });
 
-        function updateUI() {
-            if (!currentUser) return;
-            document.getElementById('header-balance').innerText = `${currentUser.walletBalance.toLocaleString()} F`;
-            document.getElementById('header-avatar').src = currentUser.avatar;
-            document.getElementById('p-img').src = currentUser.avatar;
-            document.getElementById('p-name').innerText = currentUser.fullName;
-            document.getElementById('p-bio').innerText = currentUser.bio || "Bienvenue sur Echoppe241.";
-            document.getElementById('p-wallet').innerText = `${currentUser.walletBalance.toLocaleString()} FCFA`;
-            document.getElementById('p-ad-count').innerText = currentUser.adCount || 0;
-            
-            const badge = document.getElementById('p-status-badge');
-            badge.innerText = currentUser.isVerified ? "Vendeur Certifié" : "Membre Standard";
-            badge.style.color = currentUser.isVerified ? "#00853f" : "#3a75c4";
-        }
-
-        function renderProducts() {
-            const list = document.getElementById('product-list');
-            if (allProducts.length === 0) {
-                list.innerHTML = `<p class="col-span-2 text-center py-10 text-slate-400 text-xs uppercase font-bold tracking-widest">Aucun produit en vente</p>`;
-                return;
-            }
-            list.innerHTML = allProducts.map(p => `
-                <div onclick="openProductDetail('${p.id}')" class="card-neo overflow-hidden flex flex-col cursor-pointer">
-                    <img src="${p.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400'}" class="w-full h-36 object-cover bg-slate-50">
-                    <div class="p-4 flex flex-col flex-1">
-                        <p class="text-[10px] font-black uppercase text-blue-900 truncate mb-1">${p.name}</p>
-                        <p class="text-xs font-black text-blue-600 mb-4 italic">${p.price.toLocaleString()} F</p>
-                        <button class="mt-auto w-full py-2.5 bg-[#fcd116] text-blue-900 rounded-xl text-[9px] font-black uppercase shadow-sm">
-                            Voir l'offre
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        window.openProductDetail = (id) => {
-            const p = allProducts.find(x => x.id === id);
-            if (!p) return;
-            const content = document.getElementById('detail-content');
-            content.innerHTML = `
-                <div class="flex items-center justify-between mb-6">
-                    <button onclick="closeModal('detail-modal')" class="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center"><i class="fa-solid fa-arrow-left"></i></button>
-                    <span class="text-[10px] font-black uppercase text-slate-400">Détails du produit</span>
-                    <div class="w-10"></div>
-                </div>
-                <img src="${p.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=600'}" class="w-full aspect-square object-cover rounded-[40px] shadow-2xl mb-8">
-                <div class="px-2">
-                    <div class="flex justify-between items-start mb-4">
-                        <h2 class="text-3xl font-black text-blue-900 leading-none">${p.name}</h2>
-                        <p class="text-xl font-black text-blue-600 italic">${p.price.toLocaleString()} F</p>
-                    </div>
-                    <div class="flex items-center gap-2 mb-6">
-                        <div class="green-dot"></div>
-                        <span class="text-[10px] font-bold uppercase text-slate-400">Disponible au Gabon</span>
-                    </div>
-                    <p class="text-slate-500 text-sm leading-relaxed mb-10">${p.description || "Aucune description fournie."}</p>
-                    
-                    <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-3xl mb-10">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${p.sellerUid}" class="w-12 h-12 rounded-2xl bg-white border border-slate-100">
-                        <div>
-                            <p class="text-[10px] font-black uppercase text-slate-400">Vendeur</p>
-                            <p class="text-sm font-bold text-blue-900">${p.sellerName || 'Membre Echoppe'}</p>
-                        </div>
-                    </div>
-
-                    <a href="https://wa.me/${p.sellerWhatsapp || '241077736065'}?text=Bonjour, je suis intéressé par votre produit : ${p.name}" 
-                       target="_blank" class="btn-blue text-center block shadow-xl shadow-blue-100">
-                        Contacter sur WhatsApp
-                    </a>
-                </div>
-            `;
-            document.getElementById('detail-modal').style.display = 'block';
+        window.toggleAuth = (mode) => {
+            document.getElementById('login-form').classList.toggle('hidden', mode === 'register');
+            document.getElementById('register-form').classList.toggle('hidden', mode === 'login');
         };
 
+        window.handleRegister = async () => {
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const pass = document.getElementById('reg-pass').value;
+            if (!name || pass.length < 6) return showToast("Vérifiez vos infos (pass min 6)");
+            
+            try {
+                const res = await createUserWithEmailAndPassword(auth, email, pass);
+                await setDoc(doc(db, 'artifacts', appId, 'users', res.user.uid), {
+                    fullName: name,
+                    email: email,
+                    walletBalance: 0,
+                    avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${res.user.uid}`
+                });
+            } catch (e) { showToast("Erreur d'inscription"); }
+        };
+
+        window.handleLogin = async () => {
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-pass').value;
+            try { await signInWithEmailAndPassword(auth, email, pass); } 
+            catch (e) { showToast("Identifiants incorrects"); }
+        };
+
+        window.handleLogout = () => signOut(auth);
+
+        // UI SYNC
+        function updateProfileUI() {
+            if (!userData) return;
+            document.getElementById('header-balance').innerText = `${userData.walletBalance} F`;
+            document.getElementById('header-avatar').src = userData.avatar;
+            document.getElementById('p-img').src = userData.avatar;
+            document.getElementById('p-name').innerText = userData.fullName;
+            document.getElementById('p-email').innerText = userData.email;
+            document.getElementById('p-wallet').innerText = `${userData.walletBalance} FCFA`;
+        }
+
+        // PRODUCTS & HOME
+        function loadHomeData() {
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'products'), (snap) => {
+                const list = document.getElementById('product-list');
+                list.innerHTML = snap.docs.map(d => {
+                    const p = d.data();
+                    return `
+                        <div onclick="openDetail('${d.id}')" class="card-neo overflow-hidden flex flex-col">
+                            <img src="${p.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400'}" class="w-full h-32 object-cover">
+                            <div class="p-3">
+                                <p class="text-[10px] font-black uppercase truncate">${p.name}</p>
+                                <p class="text-blue-600 font-bold text-xs">${p.price} F</p>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            });
+
+            // Listen for user conversations
+            onSnapshot(query(collection(db, 'artifacts', appId, 'public', 'data', 'chats'), where('participants', 'array-contains', user.uid)), (snap) => {
+                const list = document.getElementById('conversations-list');
+                list.innerHTML = snap.docs.map(d => {
+                    const c = d.data();
+                    const otherName = c.names.find(n => n !== userData.fullName);
+                    return `
+                        <div onclick="openChat('${d.id}', '${otherName}')" class="p-4 bg-white border border-slate-50 rounded-2xl flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600"><i class="fa-solid fa-user"></i></div>
+                                <div><p class="text-xs font-bold text-blue-900">${otherName}</p><p class="text-[10px] text-slate-400">Cliquez pour discuter</p></div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slate-200"></i>
+                        </div>
+                    `;
+                }).join('');
+            });
+        }
+
+        window.openDetail = (id) => {
+            onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'products', id), (snap) => {
+                if (!snap.exists()) return;
+                const p = snap.data();
+                document.getElementById('detail-content').innerHTML = `
+                    <button onclick="closeModal('detail-modal')" class="mb-4 w-10 h-10 bg-slate-100 rounded-full"><i class="fa-solid fa-times"></i></button>
+                    <img src="${p.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=600'}" class="w-full h-64 object-cover rounded-3xl mb-6">
+                    <h2 class="text-2xl font-black text-blue-900 mb-2">${p.name}</h2>
+                    <p class="text-blue-600 font-bold text-xl mb-4">${p.price} FCFA</p>
+                    <p class="text-slate-500 text-sm mb-8">${p.description}</p>
+                    <button onclick="startChat('${p.sellerId}', '${p.sellerName}')" class="btn-blue">Contacter le vendeur</button>
+                `;
+                openModal('detail-modal');
+            });
+        };
+
+        // MESSAGING SYSTEM
+        window.startChat = async (sellerId, sellerName) => {
+            if (sellerId === user.uid) return showToast("C'est votre annonce !");
+            const chatId = [user.uid, sellerId].sort().join('_');
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', chatId), {
+                participants: [user.uid, sellerId],
+                names: [userData.fullName, sellerName],
+                lastUpdate: serverTimestamp()
+            }, { merge: true });
+            closeModal('detail-modal');
+            openChat(chatId, sellerName);
+        };
+
+        window.openChat = (chatId, title) => {
+            activeChatId = chatId;
+            document.getElementById('chat-title').innerText = title;
+            openModal('chat-modal');
+            
+            onSnapshot(query(collection(db, 'artifacts', appId, 'public', 'data', 'chats', chatId, 'messages'), orderBy('timestamp', 'asc')), (snap) => {
+                const box = document.getElementById('chat-messages');
+                box.innerHTML = snap.docs.map(d => {
+                    const m = d.data();
+                    const isMe = m.senderId === user.uid;
+                    return `<div class="chat-bubble ${isMe ? 'chat-me' : 'chat-them'}">${m.text}</div>`;
+                }).join('');
+                box.scrollTop = box.scrollHeight;
+            });
+        };
+
+        window.sendChatMessage = async () => {
+            const txt = document.getElementById('chat-input').value;
+            if (!txt || !activeChatId) return;
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'chats', activeChatId, 'messages'), {
+                senderId: user.uid,
+                text: txt,
+                timestamp: serverTimestamp()
+            });
+            document.getElementById('chat-input').value = "";
+        };
+
+        // ECHOPPEPAY & PUBLISH
         window.publishProduct = async () => {
             const name = document.getElementById('pub-name').value;
-            const price = parseInt(document.getElementById('pub-price').value);
+            const price = document.getElementById('pub-price').value;
             const desc = document.getElementById('pub-desc').value;
             const img = document.getElementById('pub-img').value;
+            if (!name || !price) return showToast("Nom et prix requis");
 
-            if (!name || !price) { showToast("Remplissez les champs obligatoires"); return; }
-
-            try {
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'products'), {
-                    name, price, description: desc, image: img,
-                    sellerUid: currentUser.uid,
-                    sellerName: currentUser.fullName,
-                    sellerWhatsapp: currentUser.whatsapp || "",
-                    createdAt: new Date().toISOString()
-                });
-                await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid), {
-                    adCount: (currentUser.adCount || 0) + 1
-                });
-                showToast("Produit en ligne !");
-                closeModal('publish-modal');
-            } catch (e) { showToast("Erreur lors de la publication"); }
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'products'), {
+                name, price: parseInt(price), description: desc, image: img,
+                sellerId: user.uid, sellerName: userData.fullName, createdAt: serverTimestamp()
+            });
+            showToast("Produit publié !");
+            closeModal('publish-modal');
         };
 
         window.submitRecharge = async () => {
             const amount = document.getElementById('rech-amount').value;
             const ref = document.getElementById('rech-ref').value;
+            if (!amount || !ref) return showToast("Infos incomplètes");
 
-            if (!amount || !ref) { showToast("Veuillez remplir tous les champs"); return; }
-
-            try {
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'recharges'), {
-                    userId: currentUser.uid,
-                    userName: currentUser.fullName,
-                    amount: parseInt(amount),
-                    reference: ref,
-                    status: 'pending',
-                    createdAt: new Date().toISOString()
-                });
-                showToast("Demande envoyée, validation en cours !");
-                closeModal('recharge-modal');
-            } catch (e) { showToast("Erreur de soumission"); }
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'recharges'), {
+                userId: user.uid, amount: parseInt(amount), reference: ref, status: 'pending', createdAt: serverTimestamp()
+            });
+            showToast("Soumis ! En attente de validation admin.");
+            closeModal('recharge-modal');
         };
 
-        // UI HELPERS
-        window.openModal = (id) => document.getElementById(id).style.display = 'block';
-        window.closeModal = (id) => document.getElementById(id).style.display = 'none';
-
-        window.openEditProfile = () => {
-            document.getElementById('edit-name').value = currentUser.fullName;
-            document.getElementById('edit-bio').value = currentUser.bio || "";
-            document.getElementById('edit-whatsapp').value = currentUser.whatsapp || "";
-            document.getElementById('edit-avatar-preview').src = currentUser.avatar;
-            openModal('edit-profile-modal');
-        };
-
-        window.saveProfile = async () => {
-            const name = document.getElementById('edit-name').value;
-            const bio = document.getElementById('edit-bio').value;
-            const wa = document.getElementById('edit-whatsapp').value;
-            const av = document.getElementById('edit-avatar-preview').src;
-
-            try {
-                await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid), {
-                    fullName: name, bio: bio, whatsapp: wa, avatar: av
-                });
-                showToast("Profil enregistré !");
-                closeModal('edit-profile-modal');
-            } catch (e) { showToast("Erreur"); }
-        };
-
-        window.regenerateAvatar = () => {
-            const seed = Math.random().toString(36).substring(7);
-            document.getElementById('edit-avatar-preview').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`;
-        };
-
+        // HELPERS
         window.navigateTo = (v) => {
             document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
             document.getElementById(`view-${v}`).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(`nav-${v}`).classList.add('active');
         };
-
-        window.showToast = (msg) => {
-            const t = document.getElementById('toast');
-            t.innerText = msg;
-            t.style.display = 'block';
+        window.openModal = (id) => document.getElementById(id).style.display = 'block';
+        window.closeModal = (id) => document.getElementById(id).style.display = 'none';
+        window.showToast = (m) => {
+            const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block';
             setTimeout(() => t.style.display = 'none', 3000);
         };
-
-        window.addEventListener('load', () => {
+        function hideSplash() {
             setTimeout(() => {
                 const s = document.getElementById('splash-screen');
-                if(s) {
-                    s.style.opacity = '0';
-                    setTimeout(() => s.style.display = 'none', 500);
-                }
-            }, 2500);
-        });
+                if (s) { s.style.opacity = '0'; setTimeout(() => s.style.display = 'none', 500); }
+            }, 1000);
+        }
     </script>
 </body>
 </html>
