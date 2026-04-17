@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Echoppe241 | Plateforme Officielle</title>
+    <title>Echoppe241 | Plateforme Officielle</title> 
     
+     <!-- Favicon et Icônes -->
+    <link rel="icon" type="image/png" href="[url=https://imgbb.com/][img]https://i.ibb.co/RkhcRdCs/echoppe241-logo.png[/img][/url]">
+    <link rel="apple-touch-icon" href="[url=https://imgbb.com/][img]https://i.ibb.co/RkhcRdCs/echoppe241-logo.png[/img][/url]">
+ 
     <!-- Identité Visuelle & PWA -->
     <link rel="icon" type="image/png" href="https://i.ibb.co/RkhcRdCs/echoppe241-logo.png">
     <link rel="apple-touch-icon" href="https://i.ibb.co/RkhcRdCs/echoppe241-logo.png">
