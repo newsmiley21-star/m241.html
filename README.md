@@ -82,7 +82,7 @@
         <div class="max-w-md mx-auto">
             <div class="flex items-center justify-between mb-10">
                 <h2 class="text-2xl font-black text-blue-900">votre profil.</h2>
-                <button onclick="closeEditProfile()" class="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center"><i class="fa-solid fa-times"></i></button>
+                <button onclick="closeModal('edit-profile-modal')" class="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center"><i class="fa-solid fa-times"></i></button>
             </div>
 
             <div class="flex flex-col items-center mb-10">
@@ -110,6 +110,61 @@
                 </div>
                 <button onclick="saveProfile()" class="btn-blue mt-6 shadow-lg shadow-blue-200">Enregistrer les changements</button>
             </div>
+        </div>
+    </div>
+
+    <!-- MODAL PUBLICATION PRODUIT -->
+    <div id="publish-modal" class="modal-full">
+        <div class="max-w-md mx-auto">
+            <div class="flex items-center justify-between mb-10">
+                <h2 class="text-2xl font-black text-blue-900">publier.</h2>
+                <button onclick="closeModal('publish-modal')" class="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="space-y-5">
+                <input type="text" id="pub-name" class="input-custom" placeholder="Nom du produit (ex: Manioc)">
+                <input type="number" id="pub-price" class="input-custom" placeholder="Prix en FCFA">
+                <textarea id="pub-desc" class="input-custom h-32" placeholder="Description, origine, quantité disponible..."></textarea>
+                <input type="text" id="pub-img" class="input-custom" placeholder="URL de l'image (optionnel)">
+                <button onclick="publishProduct()" class="btn-blue mt-4">Mettre en vente</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL RECHARGE (ECHOPPE PAY) -->
+    <div id="recharge-modal" class="modal-full">
+        <div class="max-w-md mx-auto">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-2xl font-black text-blue-900">recharger.</h2>
+                <button onclick="closeModal('recharge-modal')" class="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center"><i class="fa-solid fa-times"></i></button>
+            </div>
+            
+            <div class="bg-blue-50 p-6 rounded-3xl mb-8 border border-blue-100">
+                <p class="text-xs font-bold text-blue-800 mb-4">Envoyez votre paiement aux numéros officiels :</p>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between bg-white p-4 rounded-2xl">
+                        <span class="text-[10px] font-black text-slate-400 uppercase">Airtel Money</span>
+                        <span class="font-black text-blue-900">077 73 60 65</span>
+                    </div>
+                    <div class="flex items-center justify-between bg-white p-4 rounded-2xl">
+                        <span class="text-[10px] font-black text-slate-400 uppercase">Moov Money</span>
+                        <span class="font-black text-blue-900">066 45 71 72</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-5">
+                <p class="text-[10px] font-black uppercase text-slate-400 text-center">Puis remplissez ce formulaire</p>
+                <input type="number" id="rech-amount" class="input-custom" placeholder="Montant envoyé">
+                <input type="text" id="rech-ref" class="input-custom" placeholder="ID de transaction / Référence">
+                <button onclick="submitRecharge()" class="btn-blue bg-[#00853f]">Valider ma recharge</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DÉTAIL PRODUIT -->
+    <div id="detail-modal" class="modal-full">
+        <div id="detail-content" class="max-w-md mx-auto">
+            <!-- Injecté dynamiquement -->
         </div>
     </div>
 
@@ -168,20 +223,20 @@
                     </div>
                     <div class="bg-[#fcd116] p-5 rounded-3xl text-blue-900">
                         <p class="text-[9px] font-bold opacity-60 uppercase tracking-widest mb-1">Annonces</p>
-                        <p class="text-xl font-black italic">0</p>
+                        <p id="p-ad-count" class="text-xl font-black italic">0</p>
                     </div>
                 </div>
             </div>
 
             <div class="space-y-3">
-                <button class="w-full p-5 bg-white border border-slate-100 rounded-2xl flex items-center justify-between">
+                <button onclick="openModal('recharge-modal')" class="w-full p-5 bg-white border border-slate-100 rounded-2xl flex items-center justify-between">
                     <div class="flex items-center gap-4">
                         <div class="w-10 h-10 bg-emerald-50 text-[#00853f] rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-bolt"></i></div>
                         <span class="text-xs font-bold uppercase text-slate-700">Recharger via Mobile Money</span>
                     </div>
                     <i class="fa-solid fa-chevron-right text-slate-300"></i>
                 </button>
-                <button class="w-full p-5 bg-white border border-slate-100 rounded-2xl flex items-center justify-between">
+                <button onclick="openModal('publish-modal')" class="w-full p-5 bg-white border border-slate-100 rounded-2xl flex items-center justify-between">
                     <div class="flex items-center gap-4">
                         <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-box-open"></i></div>
                         <span class="text-xs font-bold uppercase text-slate-700">Publier un produit</span>
@@ -207,7 +262,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, updateDoc, setDoc, collection, addDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // CONFIGURATION OFFICIELLE
         const firebaseConfig = {
@@ -226,6 +281,7 @@
         const appId = 'echoppe241-prod-final';
 
         let currentUser = null;
+        let allProducts = [];
 
         onAuthStateChanged(auth, async (u) => {
             if (u) {
@@ -240,44 +296,150 @@
                             bio: "Gabonais et fier de l'être.",
                             avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.uid}`,
                             isVerified: false,
+                            adCount: 0,
                             createdAt: new Date().toISOString()
                         };
                         setDoc(doc(db, 'artifacts', appId, 'users', u.uid), initData);
                     }
                 });
+
+                // Écouter les produits
+                onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'products'), (snap) => {
+                    allProducts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                    renderProducts();
+                });
+
             } else { signInAnonymously(auth); }
         });
 
         function updateUI() {
             if (!currentUser) return;
-            // Header
             document.getElementById('header-balance').innerText = `${currentUser.walletBalance.toLocaleString()} F`;
             document.getElementById('header-avatar').src = currentUser.avatar;
-            // Profil
             document.getElementById('p-img').src = currentUser.avatar;
             document.getElementById('p-name').innerText = currentUser.fullName;
-            document.getElementById('p-bio').innerText = currentUser.bio || "Aucune description.";
+            document.getElementById('p-bio').innerText = currentUser.bio || "Bienvenue sur Echoppe241.";
             document.getElementById('p-wallet').innerText = `${currentUser.walletBalance.toLocaleString()} FCFA`;
+            document.getElementById('p-ad-count').innerText = currentUser.adCount || 0;
             
             const badge = document.getElementById('p-status-badge');
             badge.innerText = currentUser.isVerified ? "Vendeur Certifié" : "Membre Standard";
             badge.style.color = currentUser.isVerified ? "#00853f" : "#3a75c4";
         }
 
-        // ACTIONS PROFIL
+        function renderProducts() {
+            const list = document.getElementById('product-list');
+            if (allProducts.length === 0) {
+                list.innerHTML = `<p class="col-span-2 text-center py-10 text-slate-400 text-xs uppercase font-bold tracking-widest">Aucun produit en vente</p>`;
+                return;
+            }
+            list.innerHTML = allProducts.map(p => `
+                <div onclick="openProductDetail('${p.id}')" class="card-neo overflow-hidden flex flex-col cursor-pointer">
+                    <img src="${p.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400'}" class="w-full h-36 object-cover bg-slate-50">
+                    <div class="p-4 flex flex-col flex-1">
+                        <p class="text-[10px] font-black uppercase text-blue-900 truncate mb-1">${p.name}</p>
+                        <p class="text-xs font-black text-blue-600 mb-4 italic">${p.price.toLocaleString()} F</p>
+                        <button class="mt-auto w-full py-2.5 bg-[#fcd116] text-blue-900 rounded-xl text-[9px] font-black uppercase shadow-sm">
+                            Voir l'offre
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.openProductDetail = (id) => {
+            const p = allProducts.find(x => x.id === id);
+            if (!p) return;
+            const content = document.getElementById('detail-content');
+            content.innerHTML = `
+                <div class="flex items-center justify-between mb-6">
+                    <button onclick="closeModal('detail-modal')" class="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center"><i class="fa-solid fa-arrow-left"></i></button>
+                    <span class="text-[10px] font-black uppercase text-slate-400">Détails du produit</span>
+                    <div class="w-10"></div>
+                </div>
+                <img src="${p.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=600'}" class="w-full aspect-square object-cover rounded-[40px] shadow-2xl mb-8">
+                <div class="px-2">
+                    <div class="flex justify-between items-start mb-4">
+                        <h2 class="text-3xl font-black text-blue-900 leading-none">${p.name}</h2>
+                        <p class="text-xl font-black text-blue-600 italic">${p.price.toLocaleString()} F</p>
+                    </div>
+                    <div class="flex items-center gap-2 mb-6">
+                        <div class="green-dot"></div>
+                        <span class="text-[10px] font-bold uppercase text-slate-400">Disponible au Gabon</span>
+                    </div>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-10">${p.description || "Aucune description fournie."}</p>
+                    
+                    <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-3xl mb-10">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${p.sellerUid}" class="w-12 h-12 rounded-2xl bg-white border border-slate-100">
+                        <div>
+                            <p class="text-[10px] font-black uppercase text-slate-400">Vendeur</p>
+                            <p class="text-sm font-bold text-blue-900">${p.sellerName || 'Membre Echoppe'}</p>
+                        </div>
+                    </div>
+
+                    <a href="https://wa.me/${p.sellerWhatsapp || '241077736065'}?text=Bonjour, je suis intéressé par votre produit : ${p.name}" 
+                       target="_blank" class="btn-blue text-center block shadow-xl shadow-blue-100">
+                        Contacter sur WhatsApp
+                    </a>
+                </div>
+            `;
+            document.getElementById('detail-modal').style.display = 'block';
+        };
+
+        window.publishProduct = async () => {
+            const name = document.getElementById('pub-name').value;
+            const price = parseInt(document.getElementById('pub-price').value);
+            const desc = document.getElementById('pub-desc').value;
+            const img = document.getElementById('pub-img').value;
+
+            if (!name || !price) { showToast("Remplissez les champs obligatoires"); return; }
+
+            try {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'products'), {
+                    name, price, description: desc, image: img,
+                    sellerUid: currentUser.uid,
+                    sellerName: currentUser.fullName,
+                    sellerWhatsapp: currentUser.whatsapp || "",
+                    createdAt: new Date().toISOString()
+                });
+                await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid), {
+                    adCount: (currentUser.adCount || 0) + 1
+                });
+                showToast("Produit en ligne !");
+                closeModal('publish-modal');
+            } catch (e) { showToast("Erreur lors de la publication"); }
+        };
+
+        window.submitRecharge = async () => {
+            const amount = document.getElementById('rech-amount').value;
+            const ref = document.getElementById('rech-ref').value;
+
+            if (!amount || !ref) { showToast("Veuillez remplir tous les champs"); return; }
+
+            try {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'recharges'), {
+                    userId: currentUser.uid,
+                    userName: currentUser.fullName,
+                    amount: parseInt(amount),
+                    reference: ref,
+                    status: 'pending',
+                    createdAt: new Date().toISOString()
+                });
+                showToast("Demande envoyée, validation en cours !");
+                closeModal('recharge-modal');
+            } catch (e) { showToast("Erreur de soumission"); }
+        };
+
+        // UI HELPERS
+        window.openModal = (id) => document.getElementById(id).style.display = 'block';
+        window.closeModal = (id) => document.getElementById(id).style.display = 'none';
+
         window.openEditProfile = () => {
             document.getElementById('edit-name').value = currentUser.fullName;
             document.getElementById('edit-bio').value = currentUser.bio || "";
             document.getElementById('edit-whatsapp').value = currentUser.whatsapp || "";
             document.getElementById('edit-avatar-preview').src = currentUser.avatar;
-            document.getElementById('edit-profile-modal').style.display = 'block';
-        };
-
-        window.closeEditProfile = () => document.getElementById('edit-profile-modal').style.display = 'none';
-
-        window.regenerateAvatar = () => {
-            const seed = Math.random().toString(36).substring(7);
-            document.getElementById('edit-avatar-preview').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`;
+            openModal('edit-profile-modal');
         };
 
         window.saveProfile = async () => {
@@ -291,11 +453,15 @@
                     fullName: name, bio: bio, whatsapp: wa, avatar: av
                 });
                 showToast("Profil enregistré !");
-                closeEditProfile();
-            } catch (e) { showToast("Erreur de sauvegarde"); }
+                closeModal('edit-profile-modal');
+            } catch (e) { showToast("Erreur"); }
         };
 
-        // NAVIGATION
+        window.regenerateAvatar = () => {
+            const seed = Math.random().toString(36).substring(7);
+            document.getElementById('edit-avatar-preview').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`;
+        };
+
         window.navigateTo = (v) => {
             document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
             document.getElementById(`view-${v}`).classList.add('active');
@@ -310,32 +476,13 @@
             setTimeout(() => t.style.display = 'none', 3000);
         };
 
-        // MOCKUP PRODUITS
-        const products = [
-            { name: "Manioc de Mouila", price: 3500, img: "https://images.unsplash.com/photo-1590779033100-9f60705a2f3b?w=400" },
-            { name: "Bananes Douces (Régime)", price: 5000, img: "https://images.unsplash.com/photo-1571771894821-ad99026.png?w=400" },
-            { name: "Poisson Fumée (Owendo)", price: 12000, img: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400" },
-            { name: "Huile de Palme Pure", price: 2500, img: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400" }
-        ];
-
-        document.getElementById('product-list').innerHTML = products.map(p => `
-            <div class="card-neo overflow-hidden flex flex-col">
-                <img src="${p.img}" class="w-full h-36 object-cover">
-                <div class="p-4 flex flex-col flex-1">
-                    <p class="text-[10px] font-black uppercase text-blue-900 truncate mb-1">${p.name}</p>
-                    <p class="text-xs font-black text-blue-600 mb-4 italic">${p.price.toLocaleString()} F</p>
-                    <button class="mt-auto w-full py-2.5 bg-[#fcd116] text-blue-900 rounded-xl text-[9px] font-black uppercase shadow-sm">
-                        Voir l'offre
-                    </button>
-                </div>
-            </div>
-        `).join('');
-
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const s = document.getElementById('splash-screen');
-                s.style.opacity = '0';
-                setTimeout(() => s.style.display = 'none', 500);
+                if(s) {
+                    s.style.opacity = '0';
+                    setTimeout(() => s.style.display = 'none', 500);
+                }
             }, 2500);
         });
     </script>
