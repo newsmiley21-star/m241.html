@@ -3,268 +3,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Echoppe241 | Business & Livraison</title>
+    <title>Echoppe241 | Le Marché Digital du Gabon</title>
     
-    <!-- Meta tags pour l'installation mobile (PWA) -->
+    <!-- Meta tags PWA -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Echoppe241">
     <meta name="theme-color" content="#00853f">
     
-    <!-- Icônes pour navigateurs et mobile -->
     <link rel="icon" type="image/png" href="https://i.ibb.co/RkhcRdCs/echoppe241-logo.png">
     <link rel="apple-touch-icon" href="https://i.ibb.co/RkhcRdCs/echoppe241-logo.png">
     
-    <!-- Manifeste Web pour définir l'icône d'installation -->
-    <link rel="manifest" href='data:application/json,{"name":"Echoppe241","short_name":"Echoppe241","start_url":"/","display":"standalone","background_color":"#ffffff","theme_color":"#00853f","icons":[{"src":"https://i.ibb.co/RkhcRdCs/echoppe241-logo.png","sizes":"512x512","type":"image/png"}]}'>
-
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <style>
-        :root { --gabon-green: #00853f; --gabon-yellow: #fcd116; --gabon-blue: #3a75c4; --deep-slate: #0f172a; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: var(--deep-slate); overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
-        .brand-gradient { background: linear-gradient(135deg, var(--gabon-green), #10b981); }
-        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0,0,0,0.05); }
-        .product-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid #f1f5f9; }
-        .product-card:active { transform: scale(0.98); }
-        .delivery-option.active { border-color: var(--gabon-green); background-color: #f0fdf4; border-width: 2px; }
+        :root { 
+            --gabon-green: #00853f; 
+            --gabon-yellow: #fcd116; 
+            --gabon-blue: #3a75c4; 
+            --deep-slate: #0f172a; 
+            --accent: #f59e0b;
+        }
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #fcfcfd; 
+            color: var(--deep-slate); 
+            overflow-x: hidden; 
+            -webkit-tap-highlight-color: transparent; 
+        }
+
+        .brand-gradient { background: linear-gradient(135deg, var(--gabon-green), #059669); }
+        .hero-gradient { background: linear-gradient(180deg, rgba(0, 133, 63, 0.05) 0%, rgba(252, 250, 252, 0) 100%); }
+        
+        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        
+        .btn-primary {
+            background: var(--deep-slate);
+            color: white;
+            transition: all 0.2s ease;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary:active { transform: scale(0.96); opacity: 0.9; }
+
+        .product-card { 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            border: 1px solid rgba(0,0,0,0.03);
+            background: white;
+        }
+        .product-card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); }
+        
         .hide-scroll::-webkit-scrollbar { display: none; }
         
-        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .animate-slide { animation: slideIn 0.4s ease-out forwards; }
-        
-        .loading-shimmer { background: linear-gradient(90deg, #f0f0f0 25%, #f8f8f8 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
-        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        .chip-filter {
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        .chip-filter.active {
+            background: var(--gabon-green);
+            color: white;
+            border-color: var(--gabon-green);
+            box-shadow: 0 4px 12px rgba(0, 133, 63, 0.2);
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade { animation: fadeIn 0.5s ease-out forwards; }
     </style>
 </head>
 <body>
 
-    <!-- Système de Notification (Toast) -->
+    <!-- Notification Toast -->
     <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-[3000] hidden">
-        <div class="bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border-b-2 border-amber-400 min-w-[280px]">
-            <i class="fa-solid fa-circle-check text-amber-400"></i>
-            <span id="toast-msg" class="text-[11px] font-extrabold uppercase tracking-wider italic">Action effectuée</span>
+        <div class="bg-slate-900 text-white px-6 py-4 rounded-3xl shadow-2xl flex items-center gap-3 border-l-4 border-amber-400 min-w-[300px]">
+            <i class="fa-solid fa-bell text-amber-400"></i>
+            <span id="toast-msg" class="text-xs font-bold tracking-wide">Message</span>
         </div>
     </div>
 
-    <!-- Modale Authentification -->
-    <div id="auth-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[2000] hidden flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-md rounded-[2.5rem] p-8 animate-slide shadow-2xl">
-            <div class="flex justify-between items-center mb-8">
-                <h3 class="text-2xl font-black italic uppercase tracking-tighter">Accès Echoppe<span class="text-amber-500">241</span></h3>
-                <button onclick="toggleAuthModal()" class="text-slate-400 p-2"><i class="fa-solid fa-xmark text-xl"></i></button>
-            </div>
-            
-            <div class="space-y-5">
-                <div>
-                    <label class="text-[9px] font-black uppercase text-slate-400 ml-1">Nom Complet ou Boutique</label>
-                    <input type="text" id="auth-name" placeholder="Ex: Marché de Nzeng-Ayong" class="w-full bg-slate-50 p-4 rounded-2xl border border-slate-100 font-bold focus:ring-2 ring-emerald-500/20 focus:outline-none">
-                </div>
-                
-                <div class="grid grid-cols-2 gap-3">
-                    <button onclick="setRole('buyer')" id="role-buyer" class="role-btn active p-5 border rounded-2xl flex flex-col items-center gap-2 transition-all group">
-                        <i class="fa-solid fa-basket-shopping text-xl group-[.active]:text-emerald-600"></i>
-                        <span class="text-[9px] font-black uppercase">Consommateur</span>
-                    </button>
-                    <button onclick="setRole('producer')" id="role-producer" class="role-btn p-5 border rounded-2xl flex flex-col items-center gap-2 transition-all group">
-                        <i class="fa-solid fa-wheat-awn text-xl group-[.active]:text-emerald-600"></i>
-                        <span class="text-[9px] font-black uppercase">Producteur</span>
-                    </button>
-                </div>
-
-                <button id="btn-auth-confirm" onclick="handleAuthSubmit()" class="w-full brand-gradient text-white py-5 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl mt-4 active:scale-95 transition-transform">Valider mon profil</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modale Mise en vente -->
-    <div id="publish-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[2000] hidden flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-md rounded-[2.5rem] p-8 animate-slide overflow-y-auto max-h-[95vh] shadow-2xl">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-black italic uppercase tracking-tighter">Publier un produit</h3>
-                <button onclick="togglePublishModal()" class="text-slate-400 p-2"><i class="fa-solid fa-xmark text-xl"></i></button>
-            </div>
-            <div class="space-y-4">
-                <input type="text" id="p-name" placeholder="Nom du produit (Ex: Atanga de Mouila)" class="w-full bg-slate-50 p-4 rounded-xl border border-slate-100 font-bold italic">
-                <div class="relative">
-                    <input type="number" id="p-price" placeholder="Prix" class="w-full bg-slate-50 p-4 rounded-xl border border-slate-100 font-bold">
-                    <span class="absolute right-4 top-1/2 -translate-y-1/2 font-black text-[10px] text-slate-400">FCFA</span>
-                </div>
-                <select id="p-province" class="w-full bg-slate-50 p-4 rounded-xl border border-slate-100 font-bold appearance-none">
-                    <option value="">Sélectionner la Province</option>
-                    <option>Estuaire</option><option>Haut-Ogooué</option><option>Moyen-Ogooué</option>
-                    <option>Ngounié</option><option>Nyanga</option><option>Ogooué-Ivindo</option>
-                    <option>Ogooué-Lolo</option><option>Ogooué-Maritime</option><option>Woleu-Ntem</option>
-                </select>
-                <input type="text" id="p-image" placeholder="Lien image (URL)" class="w-full bg-slate-50 p-4 rounded-xl border border-slate-100 font-bold">
-                <p class="text-[8px] text-slate-400 font-bold uppercase text-center">Note: Les prix incluent la commission Smile Services</p>
-                <button id="btn-publish-confirm" onclick="submitProduct()" class="w-full brand-gradient text-white py-5 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl active:scale-95 transition-transform">Lancer la vente</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- En-tête -->
+    <!-- Header Navigation -->
     <header class="sticky top-0 z-[1000] glass">
         <div class="h-[4px] flex">
             <div class="flex-1 bg-[var(--gabon-green)]"></div>
             <div class="flex-1 bg-[var(--gabon-yellow)]"></div>
             <div class="flex-1 bg-[var(--gabon-blue)]"></div>
         </div>
-        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
-                <img src="https://i.ibb.co/RkhcRdCs/echoppe241-logo.png" alt="Echoppe241" class="h-9 w-auto">
-                <h1 class="font-extrabold text-xl tracking-tighter uppercase">Echoppe<span class="text-amber-500">241</span></h1>
+                <img src="https://i.ibb.co/RkhcRdCs/echoppe241-logo.png" alt="Echoppe241" class="h-10 w-auto">
+                <span class="font-black text-xl tracking-tighter uppercase hidden sm:block">Echoppe<span class="text-emerald-600">241</span></span>
             </div>
-            <div class="flex items-center gap-4">
-                <div id="user-profile" class="hidden flex items-center gap-3 bg-white p-1 rounded-2xl border shadow-sm">
-                    <div id="user-initials" class="w-9 h-9 rounded-xl brand-gradient text-white flex items-center justify-center font-black text-xs uppercase shadow-inner">?</div>
-                    <button onclick="handleLogout()" class="pr-3 pl-1 text-slate-300 hover:text-red-500 transition-colors"><i class="fa-solid fa-power-off"></i></button>
+            
+            <div class="flex items-center gap-3">
+                <div id="user-profile" class="hidden flex items-center gap-2 bg-slate-100 p-1.5 rounded-full border">
+                    <div id="user-initials" class="w-8 h-8 rounded-full brand-gradient text-white flex items-center justify-center font-black text-[10px] uppercase shadow-md tracking-tighter">?</div>
+                    <button onclick="handleLogout()" class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-red-500 transition-colors"><i class="fa-solid fa-power-off text-xs"></i></button>
                 </div>
-                <button id="btn-login-trigger" onclick="toggleAuthModal()" class="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold text-[10px] uppercase tracking-wider hover:bg-black transition-colors">Connexion</button>
+                <button id="btn-login-trigger" onclick="toggleAuthModal()" class="btn-primary px-6 py-3 rounded-full font-extrabold text-[10px] uppercase tracking-widest">Compte</button>
             </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 py-8">
+    <!-- Vitrine (Hero Section) -->
+    <section id="hero-section" class="hero-gradient px-6 pt-12 pb-16 text-center max-w-5xl mx-auto">
+        <span class="inline-block bg-emerald-100 text-emerald-700 px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest mb-6">Plateforme 100% Gabonaise</span>
+        <h1 class="text-5xl md:text-7xl font-black tracking-tighter leading-[0.9] mb-6 italic uppercase">
+            Le Terroir à portée <br> de <span class="text-emerald-600 underline decoration-amber-400 underline-offset-8">clic</span>.
+        </h1>
+        <p class="text-slate-500 font-medium text-lg max-w-xl mx-auto mb-10 leading-relaxed">
+            Soutenez l'économie locale. Commandez les meilleurs produits de nos 9 provinces et faites-vous livrer chez vous.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <button onclick="document.getElementById('market-grid').scrollIntoView({behavior:'smooth'})" class="btn-primary px-10 py-5 rounded-full font-black uppercase text-[11px] tracking-widest">Explorer le marché</button>
+            <button onclick="setRole('producer'); toggleAuthModal();" class="bg-white border-2 border-slate-200 px-10 py-5 rounded-full font-black uppercase text-[11px] tracking-widest hover:border-emerald-600 transition-all">Devenir Vendeur</button>
+        </div>
+    </section>
+
+    <main class="max-w-7xl mx-auto px-6 pb-24">
         
-        <!-- DASHBOARD / ACCUEIL -->
-        <div id="view-home">
-            <!-- Vue Producteur -->
-            <section id="view-producer" class="hidden mb-12 space-y-6 animate-slide">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                    <div class="bg-white p-7 rounded-[2.5rem] border border-slate-100 shadow-sm flex items-center gap-5">
-                        <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl shadow-inner"><i class="fa-solid fa-sack-dollar"></i></div>
-                        <div>
-                            <p class="text-[10px] font-black uppercase text-slate-400 mb-0.5 tracking-tight">Ventes Encaissées</p>
-                            <h4 id="stat-sales" class="text-2xl font-black tracking-tighter">0 FCFA</h4>
-                        </div>
-                    </div>
-                    <div class="bg-white p-7 rounded-[2.5rem] border border-slate-100 shadow-sm flex items-center gap-5">
-                        <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl shadow-inner"><i class="fa-solid fa-truck-ramp-box"></i></div>
-                        <div>
-                            <p class="text-[10px] font-black uppercase text-slate-400 mb-0.5 tracking-tight">Commandes Smile</p>
-                            <h4 id="stat-count" class="text-2xl font-black tracking-tighter">0</h4>
-                        </div>
-                    </div>
-                    <button onclick="togglePublishModal()" class="brand-gradient p-7 rounded-[2.5rem] text-white shadow-xl flex items-center justify-between group active:scale-95 transition-all">
-                        <div class="text-left">
-                            <p class="text-[10px] font-black uppercase opacity-70 mb-0.5 tracking-widest">Gérer Stock</p>
-                            <h4 class="text-2xl font-black italic tracking-tighter">Nouveau Produit</h4>
-                        </div>
-                        <i class="fa-solid fa-circle-plus text-3xl group-hover:rotate-90 transition-transform"></i>
-                    </button>
-                </div>
-
-                <div class="bg-white rounded-[2.5rem] p-7 border border-slate-100 shadow-sm">
-                    <h3 class="text-[11px] font-black uppercase text-slate-400 mb-6 flex items-center gap-3">
-                        <span class="w-3 h-3 rounded-full bg-amber-400 animate-pulse"></span>
-                        Flux Logistique Smile Services
-                    </h3>
-                    <div id="delivery-tracking-list" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                        <!-- Commandes en attente -->
-                    </div>
-                </div>
-            </section>
-
-            <!-- Marché Public -->
-            <section id="view-buyer">
-                <div class="flex flex-col md:flex-row gap-6 mb-10 items-start md:items-center justify-between">
-                    <div>
-                        <h2 class="text-4xl font-black uppercase italic tracking-tighter leading-none mb-2">Terroir Gabonais</h2>
-                        <div class="flex items-center gap-2">
-                            <span class="w-4 h-[2px] bg-emerald-600"></span>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Circuit court : Plantation ➜ Assiette</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-2 overflow-x-auto pb-3 hide-scroll w-full md:w-auto" id="province-filters">
-                        <button onclick="setFilter('all')" id="filter-all" class="bg-slate-900 text-white px-6 py-4 rounded-2xl text-[10px] font-black uppercase transition-all whitespace-nowrap shadow-lg shadow-slate-900/20">Toutes Provinces</button>
-                    </div>
-                </div>
-
-                <div id="market-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                    <!-- Shimmers (Chargement) -->
-                    <div class="loading-shimmer h-72 rounded-[2.5rem]"></div>
-                    <div class="loading-shimmer h-72 rounded-[2.5rem]"></div>
-                    <div class="loading-shimmer h-72 rounded-[2.5rem]"></div>
-                    <div class="loading-shimmer h-72 rounded-[2.5rem]"></div>
-                </div>
-            </section>
+        <!-- Navigation Provinces -->
+        <div class="mb-12">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-black uppercase text-[11px] tracking-[0.2em] text-slate-400">Filtrer par province</h3>
+                <span class="h-px flex-1 bg-slate-100 mx-6"></span>
+            </div>
+            <div class="flex gap-3 overflow-x-auto pb-4 hide-scroll" id="province-filters">
+                <button onclick="setFilter('all')" class="chip-filter active px-6 py-3 rounded-full border-2 border-slate-200 text-[10px] font-black uppercase tracking-wider">Toutes</button>
+                <!-- Provinces injectées par JS -->
+            </div>
         </div>
 
-        <!-- TUNNEL DE PAIEMENT MOBILE -->
-        <div id="view-checkout" class="hidden max-w-2xl mx-auto py-6 animate-slide">
-            <div class="bg-white rounded-[4rem] p-10 shadow-2xl border border-slate-50">
-                <button onclick="navigateTo('home')" class="text-slate-400 text-[10px] font-black uppercase mb-10 flex items-center gap-3 group">
-                    <i class="fa-solid fa-chevron-left group-hover:-translate-x-1 transition-transform"></i> Retour au marché
+        <div id="view-home">
+            <!-- Espace Producteur (Masqué par défaut) -->
+            <section id="view-producer" class="hidden mb-16 animate-fade">
+                <div class="bg-slate-900 rounded-[3rem] p-8 md:p-12 text-white flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div>
+                        <h2 class="text-3xl font-black uppercase italic mb-2 tracking-tighter">Votre Boutique</h2>
+                        <div class="flex gap-8 mt-6">
+                            <div>
+                                <p class="text-[10px] uppercase font-black opacity-50 mb-1">Chiffre d'affaires</p>
+                                <span id="stat-sales" class="text-3xl font-black">0 FCFA</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="togglePublishModal()" class="bg-emerald-500 hover:bg-emerald-400 text-white w-full md:w-auto px-10 py-6 rounded-3xl font-black uppercase text-xs tracking-widest shadow-2xl transition-all">
+                        <i class="fa-solid fa-plus mr-3"></i> Ajouter un produit
+                    </button>
+                </div>
+            </section>
+
+            <!-- Marché -->
+            <div class="flex items-center gap-4 mb-8">
+                <h2 class="text-3xl font-black uppercase italic tracking-tighter">Les pépites du moment</h2>
+                <div class="flex-1 h-[1px] bg-slate-100"></div>
+            </div>
+            
+            <div id="market-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
+                <!-- Squelettes de chargement -->
+                <div class="bg-slate-50 aspect-[4/5] rounded-[2.5rem] animate-pulse"></div>
+                <div class="bg-slate-50 aspect-[4/5] rounded-[2.5rem] animate-pulse"></div>
+                <div class="bg-slate-50 aspect-[4/5] rounded-[2.5rem] animate-pulse"></div>
+            </div>
+        </div>
+
+        <!-- Vue Paiement -->
+        <div id="view-checkout" class="hidden max-w-2xl mx-auto py-12 animate-fade">
+            <div class="bg-white rounded-[4rem] p-10 md:p-16 shadow-2xl border border-slate-50">
+                <button onclick="navigateTo('home')" class="group flex items-center gap-2 text-slate-400 text-[10px] font-black uppercase mb-12 hover:text-emerald-600 transition-colors">
+                    <i class="fa-solid fa-arrow-left group-hover:-translate-x-1 transition-transform"></i> Retour au marché
                 </button>
                 
-                <h2 class="text-4xl font-black uppercase italic tracking-tighter mb-8 leading-none">Votre Commande</h2>
+                <h2 class="text-5xl font-black uppercase italic tracking-tighter mb-10 leading-[0.8]">Confirmation</h2>
                 
-                <div id="checkout-item" class="bg-slate-50 p-6 rounded-[2.5rem] flex items-center gap-6 mb-10 border border-slate-100 shadow-inner"></div>
+                <div id="checkout-item-ui" class="bg-slate-50 p-8 rounded-[3rem] flex items-center gap-6 mb-12">
+                    <!-- Rempli par JS -->
+                </div>
 
                 <div class="space-y-10">
-                    <div class="space-y-4">
-                        <label class="text-[11px] font-black uppercase text-slate-900 ml-1">Mode de Réception (Smile)</label>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <button onclick="setDeliveryMode('pickup')" id="opt-pickup" class="delivery-option active p-6 border rounded-3xl flex items-center gap-5 transition-all">
-                                <div class="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-xl text-slate-400"><i class="fa-solid fa-shop"></i></div>
-                                <div class="text-left">
-                                    <span class="block text-[10px] font-black uppercase">Retrait Sur Place</span>
-                                    <span class="text-[9px] font-bold text-slate-400">Gratuit</span>
-                                </div>
+                    <div>
+                        <p class="text-[10px] font-black uppercase text-slate-400 mb-4 tracking-[0.2em] ml-2">Mode de réception</p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <button onclick="setDeliveryMode('pickup')" id="opt-pickup" class="delivery-option active p-6 border-2 rounded-3xl text-center transition-all">
+                                <i class="fa-solid fa-shop mb-2 block text-xl"></i>
+                                <span class="font-black text-[10px] uppercase">Retrait magasin</span>
                             </button>
-                            <button onclick="setDeliveryMode('delivery')" id="opt-delivery" class="delivery-option p-6 border rounded-3xl flex items-center gap-5 transition-all">
-                                <div class="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-xl text-emerald-600"><i class="fa-solid fa-moped"></i></div>
-                                <div class="text-left">
-                                    <span class="block text-[10px] font-black uppercase">Livraison à domicile</span>
-                                    <span class="text-[9px] font-bold text-emerald-600">+1 500 FCFA</span>
-                                </div>
+                            <button onclick="setDeliveryMode('delivery')" id="opt-delivery" class="delivery-option p-6 border-2 rounded-3xl text-center transition-all">
+                                <i class="fa-solid fa-truck-fast mb-2 block text-xl"></i>
+                                <span class="font-black text-[10px] uppercase">Livraison (+1500)</span>
                             </button>
                         </div>
                     </div>
 
-                    <div id="delivery-address-box" class="hidden space-y-3">
-                        <label class="text-[11px] font-black uppercase text-slate-900 ml-1">Adresse de livraison (Libreville/POG/etc.)</label>
-                        <textarea id="pay-address" rows="2" placeholder="Ex: Akanda, Cité Shell, Villa 42" class="w-full bg-slate-50 p-6 rounded-3xl border border-slate-200 font-bold focus:ring-2 ring-emerald-500/20 focus:outline-none resize-none"></textarea>
+                    <div id="delivery-address-box" class="hidden">
+                        <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block ml-2">Adresse de livraison</label>
+                        <input type="text" id="pay-address" placeholder="Ex: Akanda, Carrefour Jiji" class="w-full bg-slate-50 p-6 rounded-3xl border-2 border-transparent focus:border-emerald-500 font-bold outline-none transition-all">
                     </div>
 
-                    <div class="p-8 border-2 border-slate-900 bg-slate-900 text-white rounded-[3rem] shadow-2xl relative overflow-hidden group">
-                        <div class="absolute -right-10 -top-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl"></div>
-                        <div class="flex justify-between items-center relative z-10">
-                            <div class="space-y-1">
-                                <span class="text-[11px] font-black uppercase opacity-60">Total Global</span>
-                                <p class="text-[9px] uppercase tracking-[0.2em] font-bold text-emerald-400">Paiement Mobile 100% Sécurisé</p>
-                            </div>
-                            <span id="checkout-total" class="font-black text-3xl tracking-tighter">0 FCFA</span>
-                        </div>
+                    <div class="p-10 bg-emerald-600 text-white rounded-[3rem] flex flex-col items-center shadow-xl">
+                        <p class="text-[10px] font-black uppercase opacity-60 mb-2">Montant Total</p>
+                        <h4 id="checkout-total" class="text-4xl font-black tracking-tighter">0 FCFA</h4>
                     </div>
 
-                    <div class="space-y-4">
-                        <label class="text-[11px] font-black uppercase text-slate-900 ml-1">Numéro Airtel Money / Moov Money</label>
-                        <input type="tel" id="pay-phone" placeholder="074 00 00 00" class="w-full bg-slate-50 p-6 rounded-3xl border border-slate-200 font-black text-2xl focus:ring-2 ring-emerald-500/20 focus:outline-none tracking-widest text-center">
+                    <div>
+                        <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block ml-2">Numéro Mobile Money</label>
+                        <input type="tel" id="pay-phone" placeholder="07x xx xx xx" class="w-full bg-slate-100 p-8 rounded-[2.5rem] font-black text-3xl text-center outline-none focus:ring-4 ring-emerald-100 transition-all">
                     </div>
 
-                    <button id="btn-process-order" onclick="processOrder()" class="w-full brand-gradient text-white py-7 rounded-[2.5rem] font-black uppercase text-[12px] tracking-widest shadow-2xl active:scale-95 hover:brightness-110 transition-all flex items-center justify-center gap-4">
-                        <i class="fa-solid fa-lock text-sm"></i>
-                        <span>Confirmer le Paiement</span>
+                    <button onclick="processOrder()" class="btn-primary w-full py-8 rounded-[2.5rem] font-black uppercase text-sm tracking-[0.3em] shadow-2xl hover:bg-emerald-700 transition-all">
+                        Payer maintenant
                     </button>
                 </div>
             </div>
         </div>
     </main>
 
+    <!-- Modale Auth -->
+    <div id="auth-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-xl z-[2000] hidden flex items-center justify-center p-6">
+        <div class="bg-white w-full max-w-md rounded-[3rem] p-10 animate-fade">
+            <div class="flex justify-between items-center mb-10">
+                <h3 class="text-3xl font-black italic uppercase tracking-tighter">Mon Espace</h3>
+                <button onclick="toggleAuthModal()" class="w-10 h-10 rounded-full bg-slate-50 text-slate-400 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-6">
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <button onclick="setRole('buyer')" id="role-buyer" class="role-btn active p-6 border-2 rounded-3xl flex flex-col items-center gap-2 transition-all">
+                        <i class="fa-solid fa-basket-shopping text-xl"></i>
+                        <span class="text-[9px] font-black uppercase">Acheteur</span>
+                    </button>
+                    <button onclick="setRole('producer')" id="role-producer" class="role-btn p-6 border-2 rounded-3xl flex flex-col items-center gap-2 transition-all">
+                        <i class="fa-solid fa-wheat-awn text-xl"></i>
+                        <span class="text-[9px] font-black uppercase">Producteur</span>
+                    </button>
+                </div>
+                <div>
+                    <label class="text-[9px] font-black uppercase text-slate-400 mb-2 block ml-2">Votre nom ou enseigne</label>
+                    <input type="text" id="auth-name" placeholder="Ex: Les Jardins d'Oyem" class="w-full bg-slate-50 p-5 rounded-2xl border-2 border-transparent focus:border-emerald-500 font-bold outline-none transition-all">
+                </div>
+                <button onclick="handleAuthSubmit()" class="btn-primary w-full py-6 rounded-2xl font-black uppercase text-[11px] tracking-widest mt-4">Commencer l'aventure</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modale Vente -->
+    <div id="publish-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-xl z-[2000] hidden flex items-center justify-center p-6">
+        <div class="bg-white w-full max-w-lg rounded-[3.5rem] p-12 animate-fade overflow-y-auto max-h-[90vh]">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-3xl font-black italic uppercase tracking-tighter">Nouvel Article</h3>
+                <button onclick="togglePublishModal()" class="text-slate-400 p-2"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="space-y-5">
+                <input type="text" id="p-name" placeholder="Nom du produit" class="w-full bg-slate-50 p-5 rounded-2xl border-2 border-transparent focus:border-emerald-500 font-bold italic outline-none">
+                <div class="relative">
+                    <input type="number" id="p-price" placeholder="Prix de vente" class="w-full bg-slate-50 p-5 rounded-2xl border-2 border-transparent focus:border-emerald-500 font-bold outline-none">
+                    <span class="absolute right-6 top-1/2 -translate-y-1/2 font-black text-[10px] text-slate-300">FCFA</span>
+                </div>
+                <select id="p-province" class="w-full bg-slate-50 p-5 rounded-2xl border-2 border-transparent focus:border-emerald-500 font-bold appearance-none outline-none">
+                    <option value="">Sélectionnez la Province</option>
+                    <option>Estuaire</option><option>Woleu-Ntem</option><option>Ogooué-Maritime</option>
+                    <option>Haut-Ogooué</option><option>Ngounié</option><option>Nyanga</option>
+                    <option>Ogooué-Ivindo</option><option>Ogooué-Lolo</option><option>Moyen-Ogooué</option>
+                </select>
+                <input type="text" id="p-image" placeholder="Lien de l'image (URL)" class="w-full bg-slate-50 p-5 rounded-2xl border-2 border-transparent focus:border-emerald-500 font-bold outline-none">
+                <button onclick="submitProduct()" class="btn-primary w-full py-6 rounded-2xl font-black uppercase text-[11px] tracking-widest mt-4 shadow-2xl">Mettre en vitrine</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, addDoc, onSnapshot, query, serverTimestamp, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, addDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const firebaseConfig = JSON.parse(__firebase_config);
+        const firebaseConfig = {
+            apiKey: "AIzaSyCEJJGhcyYWqmeI9D_lwk_qgE2J2GZhIlg",
+            authDomain: "communautedugabon.firebaseapp.com",
+            databaseURL: "https://communautedugabon-default-rtdb.firebaseio.com",
+            projectId: "communautedugabon",
+            storageBucket: "communautedugabon.firebasestorage.app",
+            messagingSenderId: "647862371022",
+            appId: "1:647862371022:web:b209bfc8eb81accb1fc69f",
+            measurementId: "G-T7415FPS91"
+        };
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const appId = 'echoppe-241-prod-v1';
+        const appId = 'echoppe-241-prod';
 
         let userProfile = null;
         let selectedRole = 'buyer';
@@ -272,284 +297,173 @@
         let activeFilter = 'all';
         let deliveryMode = 'pickup';
         let currentCheckoutItem = null;
-        const DELIVERY_FEE = 1500;
 
-        // --- AUTH & INITIALISATION ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                try {
-                    const uDoc = await getDoc(doc(db, 'artifacts', appId, 'users', user.uid));
-                    userProfile = uDoc.exists() ? { uid: user.uid, ...uDoc.data() } : { uid: user.uid, role: 'buyer', fullName: 'Invité' };
+                const uDoc = await getDoc(doc(db, 'artifacts', appId, 'users', user.uid));
+                if(uDoc.exists()) {
+                    userProfile = { uid: user.uid, ...uDoc.data() };
                     updateUI();
-                    syncCoreData();
-                } catch (e) { console.error("Erreur Profil:", e); }
+                    syncData();
+                }
             } else {
                 signInAnonymously(auth);
             }
         });
 
+        // UI HELPERS
         window.toggleAuthModal = () => document.getElementById('auth-modal').classList.toggle('hidden');
+        window.togglePublishModal = () => document.getElementById('publish-modal').classList.toggle('hidden');
+        
         window.setRole = (r) => {
             selectedRole = r;
-            document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(`role-${r}`).classList.add('active');
+            document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active', 'border-emerald-500'));
+            document.getElementById(`role-${r}`).classList.add('active', 'border-emerald-500');
         };
 
         window.handleAuthSubmit = async () => {
             const name = document.getElementById('auth-name').value.trim();
-            if (!name) return showToast("Votre nom est requis");
-            
-            const btn = document.getElementById('btn-auth-confirm');
-            btn.disabled = true;
-            btn.innerText = "Traitement...";
-
-            try {
-                await setDoc(doc(db, 'artifacts', appId, 'users', auth.currentUser.uid), {
-                    fullName: name,
-                    role: selectedRole,
-                    createdAt: serverTimestamp()
-                });
-                location.reload();
-            } catch (e) { 
-                showToast("Erreur de connexion"); 
-                btn.disabled = false;
-                btn.innerText = "Valider mon profil";
-            }
-        };
-
-        // --- GESTION PRODUITS ---
-        window.togglePublishModal = () => {
-            if(!userProfile || userProfile.fullName === 'Invité') return toggleAuthModal();
-            document.getElementById('publish-modal').classList.toggle('hidden');
+            if(!name) return;
+            await setDoc(doc(db, 'artifacts', appId, 'users', auth.currentUser.uid), {
+                fullName: name,
+                role: selectedRole,
+                createdAt: serverTimestamp()
+            });
+            location.reload();
         };
 
         window.submitProduct = async () => {
-            const name = document.getElementById('p-name').value.trim();
+            const name = document.getElementById('p-name').value;
             const price = parseInt(document.getElementById('p-price').value);
             const prov = document.getElementById('p-province').value;
-            const img = document.getElementById('p-image').value.trim() || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=400';
+            const img = document.getElementById('p-image').value || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800';
+            
+            if(!name || !price || !prov) return showToast("Veuillez remplir les champs");
 
-            if(!name || isNaN(price) || !prov) return showToast("Veuillez remplir tous les champs");
-
-            const btn = document.getElementById('btn-publish-confirm');
-            btn.disabled = true;
-            btn.innerText = "En cours...";
-
-            try {
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'products'), {
-                    name, price, province: prov, image: img,
-                    ownerId: userProfile.uid,
-                    ownerName: userProfile.fullName,
-                    status: 'active',
-                    createdAt: serverTimestamp()
-                });
-                showToast("Félicitations ! Produit en vente.");
-                togglePublishModal();
-            } catch (e) { showToast("Erreur lors de la publication"); }
-            btn.disabled = false;
-            btn.innerText = "Lancer la vente";
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'products'), {
+                name, price, province: prov, image: img,
+                ownerId: userProfile.uid, ownerName: userProfile.fullName,
+                status: 'active', createdAt: serverTimestamp()
+            });
+            showToast("Produit ajouté à la vitrine !");
+            togglePublishModal();
         };
 
-        // --- SYNCHRONISATION TEMPS REEL ---
-        function syncCoreData() {
-            // Produits du marché
+        function syncData() {
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'products'), (snap) => {
-                allProducts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                allProducts = snap.docs.map(d => ({id: d.id, ...d.data()}));
                 renderMarket();
-            }, (err) => showToast("Erreur réseau - Retentez"));
-
-            // Commandes si producteur
+                renderFilters();
+            }, (err) => console.error(err));
+            
             if(userProfile?.role === 'producer') {
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'orders'), (snap) => {
-                    const orders = snap.docs.map(d => ({id: d.id, ...d.data()}))
-                                        .filter(o => o.sellerId === userProfile.uid);
-                    renderProducerView(orders);
+                    const orders = snap.docs.map(d => ({id: d.id, ...d.data()})).filter(o => o.sellerId === userProfile.uid);
+                    let total = 0;
+                    orders.forEach(o => total += o.total);
+                    document.getElementById('stat-sales').innerText = `${total.toLocaleString()} FCFA`;
                 });
             }
         }
 
-        // --- AFFICHAGES UI ---
+        function renderFilters() {
+            const provinces = ["Estuaire", "Woleu-Ntem", "Ogooué-Maritime", "Haut-Ogooué", "Ngounié", "Nyanga", "Ogooué-Ivindo", "Ogooué-Lolo", "Moyen-Ogooué"];
+            const container = document.getElementById('province-filters');
+            const currentFilter = activeFilter;
+            
+            container.innerHTML = `<button onclick="setFilter('all')" class="chip-filter ${currentFilter==='all'?'active':''} px-6 py-3 rounded-full border-2 border-slate-200 text-[10px] font-black uppercase tracking-wider">Toutes</button>`;
+            
+            provinces.forEach(p => {
+                const btn = document.createElement('button');
+                btn.className = `chip-filter ${currentFilter===p?'active':''} px-6 py-3 rounded-full border-2 border-slate-200 text-[10px] font-black uppercase tracking-wider`;
+                btn.innerText = p;
+                btn.onclick = () => setFilter(p);
+                container.appendChild(btn);
+            });
+        }
+
         function renderMarket() {
             const grid = document.getElementById('market-grid');
             grid.innerHTML = '';
             
-            const filtered = allProducts.filter(p => (activeFilter === 'all' || p.province === activeFilter) && p.status === 'active');
+            const filtered = allProducts.filter(p => activeFilter === 'all' || p.province === activeFilter);
             
             if(filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-full py-20 text-center space-y-4">
-                    <i class="fa-solid fa-store-slash text-4xl text-slate-200"></i>
-                    <p class="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Rupture de stock dans cette zone</p>
-                </div>`;
+                grid.innerHTML = `<div class="col-span-full py-20 text-center"><p class="text-slate-400 font-bold">Aucun produit dans cette province pour le moment.</p></div>`;
                 return;
             }
 
             filtered.forEach(p => {
-                const card = document.createElement('div');
-                card.className = "product-card bg-white p-4 rounded-[2.5rem] shadow-sm flex flex-col cursor-pointer group";
-                card.onclick = () => navigateTo('checkout', p);
-                card.innerHTML = `
-                    <div class="h-48 bg-slate-50 rounded-[2rem] mb-4 overflow-hidden relative shadow-inner">
-                        <img src="${p.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                        <div class="absolute top-3 right-3 bg-emerald-500 text-white px-3 py-1.5 rounded-xl text-[8px] font-black uppercase shadow-lg border border-white/20">
-                            <i class="fa-solid fa-circle-check mr-1"></i> Vérifié
-                        </div>
-                    </div>
-                    <div class="px-2 flex-1">
-                        <div class="flex items-center gap-1.5 mb-1.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest">${p.province}</p>
-                        </div>
-                        <h4 class="font-black text-[13px] uppercase leading-tight truncate mb-3">${p.name}</h4>
-                    </div>
-                    <div class="flex items-center justify-between px-2 pb-1">
-                        <div>
-                            <p class="text-[15px] font-black text-slate-900 leading-none">${p.price.toLocaleString('fr-FR')} <span class="text-[9px]">F</span></p>
-                            <p class="text-[7px] font-bold text-slate-400 uppercase mt-1">Smile Ready</p>
-                        </div>
-                        <div class="w-10 h-10 rounded-2xl bg-slate-900 text-white flex items-center justify-center shadow-lg group-hover:brand-gradient transition-all"><i class="fa-solid fa-cart-plus"></i></div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function renderProducerView(orders) {
-            const list = document.getElementById('delivery-tracking-list');
-            list.innerHTML = '';
-            
-            const total = orders.reduce((s, o) => s + o.total, 0);
-            document.getElementById('stat-sales').innerText = `${total.toLocaleString('fr-FR')} FCFA`;
-            document.getElementById('stat-count').innerText = orders.length;
-
-            if(orders.length === 0) {
-                list.innerHTML = `<div class="col-span-full py-10 text-center text-[10px] font-bold text-slate-300 uppercase tracking-widest italic">Aucun flux de commande reçu</div>`;
-                return;
-            }
-
-            orders.forEach(o => {
                 const div = document.createElement('div');
-                div.className = "bg-slate-50 p-6 rounded-[2.5rem] border border-slate-100 flex flex-col gap-4 hover:border-emerald-200 transition-colors relative overflow-hidden";
+                div.className = "product-card p-3 rounded-[2.5rem] flex flex-col cursor-pointer animate-fade";
+                div.onclick = () => navigateTo('checkout', p);
                 div.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-2xl brand-gradient text-white flex items-center justify-center shadow-lg"><i class="fa-solid fa-box-open"></i></div>
-                            <div>
-                                <h5 class="text-[11px] font-black uppercase tracking-tight">${o.productName}</h5>
-                                <p class="text-[9px] font-bold text-emerald-600">${o.total.toLocaleString('fr-FR')} F Reçus</p>
-                            </div>
-                        </div>
-                        <span class="text-[7px] font-black uppercase bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full border border-emerald-200">Payé</span>
+                    <div class="relative mb-4 overflow-hidden rounded-[2rem]">
+                        <img src="${p.image}" class="h-56 w-full object-cover">
+                        <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest text-emerald-700 shadow-sm">${p.province}</div>
                     </div>
-                    <div class="pt-4 border-t border-slate-200/60">
-                        <p class="text-[9px] font-black text-slate-800 flex items-center gap-2 mb-1">
-                            <i class="fa-solid fa-location-dot text-slate-400"></i>
-                            ${o.deliveryMode === 'delivery' ? o.address : 'Retrait Direct à la Boutique'}
-                        </p>
-                        <p class="text-[9px] font-bold text-slate-400 italic">Contact: ${o.buyerPhone}</p>
+                    <div class="px-2 pb-2">
+                        <h4 class="font-black text-sm uppercase truncate mb-1">${p.name}</h4>
+                        <div class="flex justify-between items-center">
+                            <p class="font-black text-emerald-600 text-lg">${p.price.toLocaleString()} <span class="text-[10px]">F</span></p>
+                            <span class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400"><i class="fa-solid fa-cart-plus text-xs"></i></span>
+                        </div>
                     </div>
                 `;
-                list.appendChild(div);
+                grid.appendChild(div);
             });
         }
 
-        // --- NAVIGATION & TUNNEL PAIEMENT ---
         window.navigateTo = (v, data = null) => {
             document.getElementById('view-home').classList.toggle('hidden', v !== 'home');
+            document.getElementById('hero-section').classList.toggle('hidden', v !== 'home');
             document.getElementById('view-checkout').classList.toggle('hidden', v !== 'checkout');
-            if(v === 'checkout') {
+            
+            if(v === 'checkout' && data) {
                 currentCheckoutItem = data;
-                renderCheckout();
-            }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
-        function renderCheckout() {
-            const box = document.getElementById('checkout-item');
-            box.innerHTML = `
-                <img src="${currentCheckoutItem.image}" class="w-24 h-24 rounded-3xl object-cover shadow-lg border-2 border-white">
-                <div>
-                    <p class="text-[9px] font-black text-emerald-600 uppercase mb-1 tracking-widest">${currentCheckoutItem.province}</p>
-                    <h5 class="font-black text-xl uppercase leading-none mb-2">${currentCheckoutItem.name}</h5>
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-user-tie text-[10px] text-slate-300"></i>
-                        <p class="text-[10px] font-bold text-slate-400">${currentCheckoutItem.ownerName}</p>
+                document.getElementById('checkout-item-ui').innerHTML = `
+                    <img src="${data.image}" class="w-20 h-20 rounded-2xl object-cover shadow-lg">
+                    <div>
+                        <p class="text-[9px] font-black uppercase text-emerald-600 mb-1">${data.province}</p>
+                        <h5 class="font-black text-xl uppercase tracking-tighter">${data.name}</h5>
+                        <p class="text-slate-400 font-bold">${data.price.toLocaleString()} FCFA</p>
                     </div>
-                </div>
-            `;
-            setDeliveryMode('pickup');
-        }
+                `;
+                setDeliveryMode('pickup');
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        };
 
         window.setDeliveryMode = (m) => {
             deliveryMode = m;
-            document.getElementById('opt-pickup').classList.toggle('active', m === 'pickup');
-            document.getElementById('opt-delivery').classList.toggle('active', m === 'delivery');
+            document.querySelectorAll('.delivery-option').forEach(el => el.classList.remove('active', 'border-emerald-500', 'bg-emerald-50'));
+            document.getElementById(`opt-${m}`).classList.add('active', 'border-emerald-500', 'bg-emerald-50');
             document.getElementById('delivery-address-box').classList.toggle('hidden', m === 'pickup');
             
-            const total = currentCheckoutItem.price + (m === 'delivery' ? DELIVERY_FEE : 0);
-            document.getElementById('checkout-total').innerText = `${total.toLocaleString('fr-FR')} FCFA`;
+            const total = currentCheckoutItem.price + (m === 'delivery' ? 1500 : 0);
+            document.getElementById('checkout-total').innerText = `${total.toLocaleString()} FCFA`;
         };
 
         window.processOrder = async () => {
-            const phone = document.getElementById('pay-phone').value.trim();
-            const address = document.getElementById('pay-address').value.trim();
-            const btn = document.getElementById('btn-process-order');
+            const phone = document.getElementById('pay-phone').value;
+            if(!phone) return showToast("Numéro Mobile Money requis");
             
-            if(!phone || phone.length < 8) return showToast("Numéro Mobile Invalide");
-            if(deliveryMode === 'delivery' && !address) return showToast("Lieu de livraison requis");
-
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Transaction Smile...`;
-
-            try {
-                const total = currentCheckoutItem.price + (deliveryMode === 'delivery' ? DELIVERY_FEE : 0);
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'orders'), {
-                    productId: currentCheckoutItem.id,
-                    productName: currentCheckoutItem.name,
-                    sellerId: currentCheckoutItem.ownerId,
-                    buyerId: userProfile.uid,
-                    buyerPhone: phone,
-                    total: total,
-                    deliveryMode: deliveryMode,
-                    address: address || 'Retrait Coopérative',
-                    status: 'paid',
-                    createdAt: serverTimestamp()
-                });
-                showToast("Commande payée ! Merci pour votre confiance.");
-                navigateTo('home');
-            } catch (e) { showToast("Paiement échoué"); }
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'orders'), {
+                productName: currentCheckoutItem.name,
+                sellerId: currentCheckoutItem.ownerId,
+                total: currentCheckoutItem.price + (deliveryMode === 'delivery' ? 1500 : 0),
+                buyerPhone: phone,
+                status: 'paid',
+                createdAt: serverTimestamp()
+            });
             
-            btn.disabled = false;
-            btn.innerHTML = `<i class="fa-solid fa-lock text-sm"></i> <span>Confirmer le Paiement</span>`;
+            showToast("Commande confirmée ! Merci.");
+            setTimeout(() => navigateTo('home'), 1500);
         };
 
-        // --- FILTRES PROVINCES ---
-        const provinces = ["Estuaire", "Haut-Ogooué", "Moyen-Ogooué", "Ngounié", "Nyanga", "Ogooué-Ivindo", "Ogooué-Lolo", "Ogooué-Maritime", "Woleu-Ntem"];
-        const filterBox = document.getElementById('province-filters');
-        provinces.forEach(p => {
-            const btn = document.createElement('button');
-            btn.className = "bg-white border border-slate-100 px-6 py-4 rounded-2xl text-[10px] font-black uppercase whitespace-nowrap shadow-sm hover:border-slate-300 transition-all";
-            btn.innerText = p;
-            btn.onclick = () => {
-                document.querySelectorAll('#province-filters button').forEach(b => {
-                    b.className = "bg-white border border-slate-100 px-6 py-4 rounded-2xl text-[10px] font-black uppercase whitespace-nowrap shadow-sm";
-                });
-                btn.className = "bg-slate-900 text-white px-6 py-4 rounded-2xl text-[10px] font-black uppercase whitespace-nowrap shadow-lg shadow-slate-900/20";
-                activeFilter = p;
-                renderMarket();
-            };
-            filterBox.appendChild(btn);
-        });
-
-        window.setFilter = (f) => {
-            activeFilter = f;
-            renderMarket();
-        };
-
-        // --- UTILITAIRES ---
         function updateUI() {
-            const isGuest = !userProfile || userProfile.fullName === 'Invité';
-            document.getElementById('btn-login-trigger').classList.toggle('hidden', !isGuest);
-            document.getElementById('user-profile').classList.toggle('hidden', isGuest);
+            document.getElementById('btn-login-trigger').classList.toggle('hidden', !!userProfile);
+            document.getElementById('user-profile').classList.toggle('hidden', !userProfile);
             if(userProfile) {
                 document.getElementById('user-initials').innerText = userProfile.fullName[0];
                 document.getElementById('view-producer').classList.toggle('hidden', userProfile.role !== 'producer');
@@ -560,10 +474,15 @@
             const t = document.getElementById('toast');
             document.getElementById('toast-msg').innerText = m;
             t.classList.remove('hidden');
-            setTimeout(() => t.classList.add('hidden'), 4000);
+            setTimeout(() => t.classList.add('hidden'), 3500);
         }
 
         window.handleLogout = () => signOut(auth).then(() => location.reload());
+        window.setFilter = (f) => { 
+            activeFilter = f; 
+            renderMarket(); 
+            renderFilters();
+        };
 
     </script>
 </body>
