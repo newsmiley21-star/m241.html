@@ -623,6 +623,20 @@ document.getElementById('detail-content').innerHTML = `
                 openModal('detail-modal');
             });
         };
+        window.deleteProduct = async (productId) => {
+    if (confirm("Voulez-vous vraiment retirer cet article de la vente ?")) {
+        try {
+            // Importation nécessaire pour que deleteDoc fonctionne
+            const { deleteDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+            
+            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', productId));
+            showToast("Article supprimé !");
+            closeModal('detail-modal');
+        } catch (e) {
+            showToast("Erreur lors de la suppression");
+        }
+    }
+};
 
         window.initiateChat = async (sid, sname) => {
             if(sid === user.uid) return showToast("C'est votre produit !");
